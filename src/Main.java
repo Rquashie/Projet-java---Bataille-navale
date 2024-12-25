@@ -7,11 +7,11 @@ public class Main {
     public static void main(String[] args) {
         Scanner scannerJun = new Scanner(System.in), scannerJdeux = new Scanner(System.in);
         String pseudoJun = "", pseudoJdeux = "";
-        String orientationPorteAvion = "", orientationCuirasse = "", orientationSousMarin = "" , orientationCroiseur = "";
-        boolean placementPorteAvion = false , placementCuirasse = false, placementSousMarin = false , placementCroiseur = false;
+        String orientationPorteAvion = "", orientationCuirasse = "", orientationSousMarin = "", orientationCroiseur = "" , orientationTorpilleur = "";
+        boolean placementPorteAvion = false, placementCuirasse = false, placementSousMarin = false, placementCroiseur = false , placementTorpilleur=false;
         int coord_X_PorteAvion = 0, coord_X_Cuirasse = 0, coord_X_SousMarin = 0, coord_X_Croiseur, coord_X_Torpilleur = 0;
         int coord_Y_PorteAvion = 0, coord_Y_Cuirasse = 0, coord_Y_SousMarin = 0, coord_Y_Croiseur = 0, coord_Y_Torpilleur = 0;
-        String navire ;
+        String navire;
 
         System.out.println("Pseudo joueur 1 : ");
         pseudoJun = scannerJun.nextLine();
@@ -29,29 +29,29 @@ public class Main {
             }
         }
         //------------------------------Placer le Porte Avions-----------------------------------------------------------
-        while(!placementPorteAvion) {
-                System.out.println("Veuillez saisir la coordonne X de votre Porte-Avions :");
+        while (!placementPorteAvion) {
+            System.out.println("Veuillez saisir la coordonne X de votre Porte-Avions :");
+            coord_X_PorteAvion = scannerJun.nextInt();
+            while (coord_X_PorteAvion > 9) {
+                System.out.println("Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
                 coord_X_PorteAvion = scannerJun.nextInt();
-                while(coord_X_PorteAvion > 9) {
-                    System.out.println("Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
-                    coord_X_PorteAvion = scannerJun.nextInt();
-                }
-                System.out.println("Veuillez saisir la coordonne Y de votre Porte-Avions :");
+            }
+            System.out.println("Veuillez saisir la coordonne Y de votre Porte-Avions :");
+            coord_Y_PorteAvion = scannerJun.nextInt();
+            while (coord_Y_PorteAvion > 9) {
+                System.out.println("Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
                 coord_Y_PorteAvion = scannerJun.nextInt();
-                while(coord_Y_PorteAvion > 9) {
-                    System.out.println("Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
-                    coord_Y_PorteAvion = scannerJun.nextInt();
-                }
-                System.out.println("Veuillez saisir l'orientation de votre Porte-Avions : ");
-                orientationPorteAvion = scannerJun.next();
+            }
+            System.out.println("Veuillez saisir l'orientation de votre Porte-Avions : ");
+            orientationPorteAvion = scannerJun.next();
 
-                while(!orientationPorteAvion.equalsIgnoreCase("H") && !orientationPorteAvion.equalsIgnoreCase("V")) {
+            while (!orientationPorteAvion.equalsIgnoreCase("H") && !orientationPorteAvion.equalsIgnoreCase("V")) {
                 System.out.println("Veuillez saisir une orientation correcte pour votre Porte-avion : ");
                 orientationPorteAvion = scannerJun.next();
             }
 
-                placementPorteAvion = ajoutePorteAvion(grilleJun, coord_X_PorteAvion, coord_Y_PorteAvion, orientationPorteAvion);
-            }
+            placementPorteAvion = ajoutePorteAvion(grilleJun, coord_X_PorteAvion, coord_Y_PorteAvion, orientationPorteAvion);
+        }
 
 
         for (int i = 0; i < grilleJun.length; i++) {
@@ -60,11 +60,11 @@ public class Main {
         ;
 
         //-------------------------------------------Placer le cuirasse-----------------------------------------
-        while (!placementCuirasse ) {
+        while (!placementCuirasse) {
             System.out.println("Veuillez saisir la coordonne X de votre Cuirasse:");
             coord_X_Cuirasse = scannerJun.nextInt();
 
-            while(coord_X_Cuirasse > 9) {
+            while (coord_X_Cuirasse > 9) {
                 System.out.println("Veuillez saisir une coordonnée X correcte pour le Cuirasse :");
                 coord_X_Cuirasse = scannerJun.nextInt();
             }
@@ -72,14 +72,14 @@ public class Main {
             System.out.println("Veuillez saisir la coordonne Y de votre Cuirasse :");
             coord_Y_Cuirasse = scannerJun.nextInt();
 
-            while(coord_Y_Cuirasse > 9) {
+            while (coord_Y_Cuirasse > 9) {
                 System.out.println("Veuillez saisir une coordonnée Y correcte pour le Cuirasse :");
                 coord_Y_Cuirasse = scannerJun.nextInt();
             }
 
             System.out.println("Veuillez saisir l'orientation de votre Cuirasse : ");
             orientationCuirasse = scannerJun.next();
-            while(!orientationCuirasse.equalsIgnoreCase("H") && !orientationCuirasse.equalsIgnoreCase("V")) {
+            while (!orientationCuirasse.equalsIgnoreCase("H") && !orientationCuirasse.equalsIgnoreCase("V")) {
                 System.out.println("Veuillez saisir une orientation correcte pour votre Cuirasse : ");
                 orientationCuirasse = scannerJun.next();
             }
@@ -95,57 +95,87 @@ public class Main {
         while (!placementSousMarin) {
             System.out.println("Veuillez saisir la coordonne X de votre Sous-Marin :");
             coord_X_SousMarin = scannerJun.nextInt();
-            while(coord_X_SousMarin > 9) {
+            while (coord_X_SousMarin > 9) {
                 System.out.println("Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
                 coord_X_SousMarin = scannerJun.nextInt();
             }
             System.out.println("Veuillez saisir la coordonne Y de votre Sous-Marin :");
             coord_Y_SousMarin = scannerJun.nextInt();
-            while(coord_Y_SousMarin > 9) {
+            while (coord_Y_SousMarin > 9) {
                 System.out.println("Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
                 coord_Y_SousMarin = scannerJun.nextInt();
             }
 
             System.out.println("Veuillez saisir l'orientation de votre Sous-Marin : ");
             orientationSousMarin = scannerJun.next();
-            while(!orientationSousMarin.equalsIgnoreCase("H") && !orientationSousMarin.equalsIgnoreCase("V")) {
+            while (!orientationSousMarin.equalsIgnoreCase("H") && !orientationSousMarin.equalsIgnoreCase("V")) {
                 System.out.println("Veuillez saisir une orientation correct pour votre Sous-Marin : ");
                 orientationSousMarin = scannerJun.next();
             }
-            placementSousMarin = ajouteSousMarinOuCroiseur(grilleJun, coord_X_SousMarin, coord_Y_SousMarin, orientationSousMarin,"Sous-Marin");
+            placementSousMarin = ajouteSousMarinOuCroiseur(grilleJun, coord_X_SousMarin, coord_Y_SousMarin, orientationSousMarin, "Sous-Marin");
         }
         for (int i = 0; i < grilleJun.length; i++) {
             System.out.print((Arrays.deepToString(grilleJun[i]) + '\n'));
         }
+        System.out.println('\n') ;
         //------------------------------------------Placement Croiseur : 3 cases--------------------------------------------
         while (!placementCroiseur) {
 
             System.out.println("Veuillez saisir la coordonne X de votre Croiseur  :");
             coord_X_Croiseur = scannerJun.nextInt();
-            while(coord_X_Croiseur > 9) {
+            while (coord_X_Croiseur > 9) {
                 System.out.println("Veuillez saisir une coordonne X de votre Croiseur :");
                 coord_X_Croiseur = scannerJun.nextInt();
             }
             System.out.println("Veuillez saisir la coordonne Y de votre Croiseur  :");
             coord_Y_Croiseur = scannerJun.nextInt();
-            while(coord_Y_Croiseur > 9) {
+            while (coord_Y_Croiseur > 9) {
                 System.out.println("Veuillez saisir une coordonne Y correcte pour votre Croiseur :");
                 coord_Y_Croiseur = scannerJun.nextInt();
             }
 
             System.out.println("Veuillez saisir l'orientation de votre Croiseur : ");
             orientationCroiseur = scannerJun.next();
-            while(orientationCroiseur.equalsIgnoreCase("H") && orientationCroiseur.equalsIgnoreCase("V")) {
+            while (orientationCroiseur.equalsIgnoreCase("H") && orientationCroiseur.equalsIgnoreCase("V")) {
                 System.out.println("Veuillez saisir une orientation correcte pour votre Croiseur : ");
                 orientationCroiseur = scannerJun.next();
             }
-            placementCroiseur = ajouteSousMarinOuCroiseur(grilleJun, coord_X_Croiseur, coord_Y_Croiseur, orientationCroiseur,"Croiseur");
+            placementCroiseur = ajouteSousMarinOuCroiseur(grilleJun, coord_X_Croiseur, coord_Y_Croiseur, orientationCroiseur, "Croiseur");
         }
         for (int i = 0; i < grilleJun.length; i++) {
             System.out.print((Arrays.deepToString(grilleJun[i]) + '\n'));
         }
+        System.out.println('\n') ;
         //-----------------------------------Placement torpilleur : 2 cases----------------------------------------------
+        while (!placementTorpilleur) {
+
+            System.out.println("Veuillez saisir la coordonne X de votre Torpilleur  :");
+            coord_X_Torpilleur = scannerJun.nextInt();
+            while (coord_X_Torpilleur > 9) {
+                System.out.println("Veuillez saisir une coordonne X de votre Torpilleur :");
+                coord_X_Torpilleur = scannerJun.nextInt();
+            }
+            System.out.println("Veuillez saisir la coordonne Y de votre Torpilleur  :");
+            coord_Y_Torpilleur = scannerJun.nextInt();
+            while (coord_Y_Torpilleur > 9) {
+                System.out.println("Veuillez saisir une coordonne Y correcte pour votre Torpilleur :");
+                coord_Y_Torpilleur = scannerJun.nextInt();
+            }
+
+            System.out.println("Veuillez saisir l'orientation de votre Torpilleur : ");
+            orientationTorpilleur = scannerJun.next();
+            while (orientationTorpilleur.equalsIgnoreCase("H") && orientationTorpilleur.equalsIgnoreCase("V")) {
+                System.out.println("Veuillez saisir une orientation correcte pour votre Croiseur : ");
+                orientationTorpilleur = scannerJun.next();
+            }
+            placementTorpilleur = ajouteTorpilleur(grilleJun, coord_X_Torpilleur, coord_Y_Torpilleur, orientationTorpilleur);
+        }
+        System.out.println('\n');
+        for (int i = 0; i < grilleJun.length; i++) {
+            System.out.print((Arrays.deepToString(grilleJun[i]) + '\n'));
+        }
     }
+
 
 
     public static boolean ajoutePorteAvion(String[][] grille, int emplacement_x, int emplacement_y, String orientation) {
@@ -393,7 +423,7 @@ public class Main {
         }
         return true;
     }
-
+//---------------------------------------------ajouteSousMarinOuCroiseur--------------------------------------------------
 
     public static boolean ajouteSousMarinOuCroiseur(String[][] grille, int emplacement_x, int emplacement_y, String orientation, String navire) {
 
@@ -480,10 +510,8 @@ public class Main {
                     System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 2) + "]" + "[" + (emplacement_y) + "]");
                     return false;
                 }
-
             }
-        }
-        else if(navire.equals("Croiseur")) {
+        } else if (navire.equals("Croiseur")) {
             if (emplacement_y <= 5 && orientation.equals("H")) {
                 if (grille[emplacement_x][emplacement_y].equals("~")) {
                     grille[emplacement_x][emplacement_y] = "CR";
@@ -566,9 +594,75 @@ public class Main {
                 }
             }
         }
+            return true;
+
+    }
+    //----------------------------------------ajouteTorpilleur-----------------------------------------------
+
+    public static boolean ajouteTorpilleur(String[][] grille, int emplacement_x, int emplacement_y, String orientation) {
+
+        if (emplacement_y <= 5 && orientation.equals("H")) {
+            if (grille[emplacement_x][emplacement_y].equals("~")) {
+                grille[emplacement_x][emplacement_y] = "TOR";
+            } else {
+                System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
+                return false;
+            }
+
+            if (grille[emplacement_x][emplacement_y + 1].equals("~")) {
+                grille[emplacement_x][emplacement_y + 1] = "PILLEUR";
+            } else {
+                System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 1) + "]");
+                return false;
+            }
+        } else if (emplacement_y > 5 && orientation.equals("H")) {
+            if (grille[emplacement_x][emplacement_y].equals("~")) {
+                grille[emplacement_x][emplacement_y] = "TORP";
+            } else {
+                System.out.println("Erreur Torpilleur(H)Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
+                return false;
+            }
+            if (grille[emplacement_x][emplacement_y - 1].equals("~")) {
+                grille[emplacement_x][emplacement_y - 1] = "ILLEUR";
+            } else {
+                System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 1) + "]");
+                return false;
+            }
+
+
+        } else if (emplacement_x <= 5 && orientation.equals("V")) {
+            if (grille[emplacement_x][emplacement_y].equals("~")) {
+                grille[emplacement_x][emplacement_y] = "TORP";
+            } else {
+                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
+                return false;
+            }
+            if (grille[emplacement_x + 1][emplacement_y].equals("~")) {
+                grille[emplacement_x + 1][emplacement_y] = "ILLEUR";
+            } else {
+                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + (emplacement_x + 1) + "]" + "[" + (emplacement_y) + "]");
+                return false;
+            }
+
+        } else if (emplacement_x > 5 && orientation.equals("V")) {
+            if (grille[emplacement_x][emplacement_y].equals("~")) {
+                grille[emplacement_x][emplacement_y] = "TORP";
+            } else {
+                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y) + "]");
+                return false;
+            }
+            if (grille[emplacement_x - 1][emplacement_y].equals("~")) {
+                grille[emplacement_x - 1][emplacement_y] = "ILLEUR";
+            } else {
+                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
+                return false;
+            }
+
+        }
         return true;
-        }
-        }
+
+    }
+}
 
 
 
