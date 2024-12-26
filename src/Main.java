@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -13,10 +14,13 @@ public class Main {
         boolean placementPorteAvionJun = false, placementCroiseurJun = false, placementSousMarinJun = false, placementDestroyerJun = false, placementTorpilleurJun = false;
         int coord_X_PorteAvionJun = 0, coord_X_CroiseurJun = 0, coord_X_SousMarinJun = 0, coord_X_DestroyerJun = 0, coord_X_TorpilleurJun = 0;
         int coord_Y_PorteAvionJun = 0, coord_Y_CroiseurJun = 0, coord_Y_SousMarinJun = 0, coord_Y_DestroyerJun = 0, coord_Y_TorpilleurJun = 0;
-        int tir_X_Jun = 0, tir_Y_Jun = 0, nbTouchePorteAvionJun = 0;
-        boolean coule = false;
-        ArrayList <Object> liste = new ArrayList <>() ;
+        int tir_X_Jun = 0, tir_Y_Jun = 0, nbTouchePorteAvionJun = 0, nbToucheCroiseurJun = 0, nbToucheSousMarinJun = 0, nbToucheDestroyerJun = 0, nbToucheTorpilleurJun = 0;
+        boolean coulePorteAvionJun = false, couleCroiseurJun = false, couleSousMarinJun = false, couleDestroyerJun = false, couleTorpilleurJun = false;
+        boolean estTouche = false ;
+        boolean victoireJun = false;
+        ArrayList<Object> liste = new ArrayList<>();
         int countLigneListe = 0 ;
+
 
         String orientationPorteAvionJdeux = "", orientationCroiseurJdeux = "", orientationSousMarinJdeux = "", orientationDestroyerJdeux = "", orientationTorpilleurJdeux = "";
         boolean placementPorteAvionJdeux = false, placementCroiseurJdeux = false, placementSousMarinJdeux = false, placementDestroyerJdeux = false, placementTorpilleurJdeux = false;
@@ -343,43 +347,89 @@ public class Main {
         //----------------------------------------------Choix tirs-------------------------------------------------------
 
 
-        while (!coule) {
-        System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
-        tir_X_Jun = scannerJun.nextInt();
+        while (!(coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun)) {
 
-        System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
-        tir_Y_Jun = scannerJun.nextInt();
+            System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
+            tir_X_Jun = scannerJun.nextInt();
 
-        liste.add("["+tir_X_Jun+"]\t");
-        liste.add("["+tir_Y_Jun+"]\t\n");
+            System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
+            tir_Y_Jun = scannerJun.nextInt();
 
-        //Porte-Avion
-        if (!"  ~  ".equals(grilleJdeux[tir_X_Jun][tir_Y_Jun]) && grilleJdeux[tir_X_Jun][tir_Y_Jun].contains("PO") || grilleJdeux[tir_X_Jun][tir_Y_Jun].contains("RT") ||
-                                grilleJdeux[tir_X_Jun][tir_Y_Jun].contains("E") || grilleJdeux[tir_X_Jun][tir_Y_Jun].contains("AV") ||
-                                grilleJdeux[tir_X_Jun][tir_Y_Jun].contains("ION")) {
-                            nbTouchePorteAvionJun++;
-                            System.out.println("Touché\n");
-                            }
-        else {
-            System.out.println("Eau\n");
-                    }
-            if (nbTouchePorteAvionJun == 5) {
-                coule = true;
-                System.out.println("Porte-Avion coulé !");
-                break ;
+
+            liste.add("[" + tir_X_Jun + "]\t");
+            liste.add("[" + tir_Y_Jun + "]\t\n");
+
+            //contientBateau()  Porte-Avion
+            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Porte-Avions")) {
+                System.out.println("Touché\n");
+                nbTouchePorteAvionJun ++;
+                estTouche = true ;
+                if (nbTouchePorteAvionJun == 5) {
+                    coulePorteAvionJun = true;
+                    System.out.println("Porte-Avion coulé !\n");
+                }
+            }
+
+            //Croiseur
+            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Croiseur")) {
+                System.out.println("Touché\n");
+                nbToucheCroiseurJun += 1;
+                estTouche=true ;
+                if (nbToucheCroiseurJun == 4) {
+                    couleCroiseurJun = true;
+                    System.out.println("Croiseur coulé !\n");
+                }
+
+            }if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Sous-marin")) {
+                System.out.println("Touché \n");
+                nbToucheSousMarinJun += 1;
+                estTouche = true ;
+                if (nbToucheSousMarinJun == 3) {
+                    couleSousMarinJun = true;
+                    System.out.println("Sous-Marin coulé !\n");
+                }
+
+            }if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Destroyer")) {
+                System.out.println("Touché\n");
+                nbToucheDestroyerJun += 1;
+                estTouche = true ;
+                if (nbToucheDestroyerJun == 3) {
+                    couleDestroyerJun = true;
+                    System.out.println("Destroyer coulé !\n");
+                }
+
+            }if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Torpilleur")) {
+                System.out.println("Touché\n");
+                nbToucheTorpilleurJun +=1;
+                estTouche = true ;
+                if (nbToucheTorpilleurJun == 2) {
+                    couleTorpilleurJun = true;
+                    System.out.println("Torpilleur coulé !\n");
+                }
+            } if(!estTouche){
+                System.out.println("Eau");
+            }
+            for (String[] ligneJdeux : grilleJdeux) {
+                System.out.println(Arrays.deepToString(ligneJdeux) + "\n");
             }
         }
 
-        System.out.println("Historique des choix du joueur 1 ");
-        for(Object coord : liste ){
-            countLigneListe ++ ;
+
+
+        if (coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun) {
+            victoireJun = true;
+            System.out.println(pseudoJun + " a gagné \n");
+        }
+
+        System.out.println("Historique des choix du joueur 1 : ");
+        for (Object coord : liste) {
+            countLigneListe++;
             System.out.print(coord);
-            if(countLigneListe % 2 == 0){
-                System.out.print('\n') ;
+            if (countLigneListe % 2 == 0) {
+                System.out.print('\n');
             }
         }
     }
-
 
 
     public static boolean ajoutePorteAvion(String[][] grille, int emplacement_x, int emplacement_y, String orientation) {
@@ -536,13 +586,13 @@ public class Main {
                 return false;
             }
             if (grille[emplacement_x][emplacement_y + 2].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 2] = "S ";
+                grille[emplacement_x][emplacement_y + 2] = "SE ";
             } else {
                 System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 2) + "]");
                 return false;
             }
             if (grille[emplacement_x][emplacement_y + 3].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 3] = "EUR";
+                grille[emplacement_x][emplacement_y + 3] = "UR";
             } else {
                 System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 3) + "]");
                 return false;
@@ -561,14 +611,14 @@ public class Main {
                 return false;
             }
             if (grille[emplacement_x][emplacement_y - 2].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 2] = "S ";
+                grille[emplacement_x][emplacement_y - 2] = "SE";
             } else {
                 System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 2) + "]");
                 return false;
             }
 
             if (grille[emplacement_x][emplacement_y - 3].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 3] = "EUR";
+                grille[emplacement_x][emplacement_y - 3] = "UR";
             } else {
                 System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 3) + "]");
                 return false;
@@ -779,13 +829,13 @@ public class Main {
 
             } else if (emplacement_x > 5 && orientation.equals("V")) {
                 if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "DES";
+                    grille[emplacement_x][emplacement_y] = "DE";
                 } else {
                     System.out.println("Erreur Destroyer(V) : Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y) + "]");
                     return false;
                 }
                 if (grille[emplacement_x - 1][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x - 1][emplacement_y] = "TR";
+                    grille[emplacement_x - 1][emplacement_y] = "STR";
                 } else {
                     System.out.println("Erreur Destroyer(V) : Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
                     return false;
@@ -798,7 +848,7 @@ public class Main {
                 }
             }
         }
-            return true;
+        return true;
 
     }
     //----------------------------------------ajouteTorpilleur-----------------------------------------------
@@ -807,14 +857,14 @@ public class Main {
 
         if (emplacement_y <= 5 && orientation.equals("H")) {
             if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "TOR";
+                grille[emplacement_x][emplacement_y] = "TORP";
             } else {
                 System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
                 return false;
             }
 
             if (grille[emplacement_x][emplacement_y + 1].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 1] = "PILLEUR";
+                grille[emplacement_x][emplacement_y + 1] = "ILLEUR";
             } else {
                 System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 1) + "]");
                 return false;
@@ -866,6 +916,89 @@ public class Main {
         return true;
 
     }
+
+    public static boolean contientBateau(String grille [][] ,int x ,int y , String bateau) {
+        if(bateau.equals("Porte-Avions")){
+            if(grille[x][y].equals("PO")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("RT")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("E ")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("AV")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("ION")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        }
+        else if(bateau.equals("Croiseur")){
+            if(grille[x][y].equals("CR")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("OI")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("SE")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("UR")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        }
+        else if(bateau.equals("Sous-marin")){
+            if(grille[x][y].equals("SOUS")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("MA")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("RIN")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        }
+        else if(bateau.equals("Destroyer")){
+            if(grille[x][y].equals("DE")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("STR")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("OYER")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        }
+        else if(bateau.equals("Torpilleur")){
+            if(grille[x][y].equals("TORP")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if(grille[x][y].equals("ILLEUR")){
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        }
+        return false ;
+    }
+
 }
 
 
