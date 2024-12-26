@@ -18,15 +18,20 @@ public class Main {
         boolean coulePorteAvionJun = false, couleCroiseurJun = false, couleSousMarinJun = false, couleDestroyerJun = false, couleTorpilleurJun = false;
         boolean estTouche = false ;
         boolean victoireJun = false;
-        ArrayList<Object> liste = new ArrayList<>();
+        ArrayList<Object> listeTirsJun = new ArrayList<>() ;ArrayList<Object> listeTouchesCoulesJun = new ArrayList<>() ;
+
         int countLigneListe = 0 ;
+
 
 
         String orientationPorteAvionJdeux = "", orientationCroiseurJdeux = "", orientationSousMarinJdeux = "", orientationDestroyerJdeux = "", orientationTorpilleurJdeux = "";
         boolean placementPorteAvionJdeux = false, placementCroiseurJdeux = false, placementSousMarinJdeux = false, placementDestroyerJdeux = false, placementTorpilleurJdeux = false;
         int coord_X_PorteAvionJdeux = 0, coord_X_CroiseurJdeux = 0, coord_X_SousMarinJdeux = 0, coord_X_DestroyerJdeux = 0, coord_X_TorpilleurJdeux = 0;
         int coord_Y_PorteAvionJdeux = 0, coord_Y_CroiseurJdeux = 0, coord_Y_SousMarinJdeux = 0, coord_Y_DestroyerJdeux = 0, coord_Y_TorpilleurJdeux = 0;
-        int tir_X_Jdeux = 0, tir_Y_Jdeux = 0, nbToucheJdeux;
+        int tir_X_Jdeux = 0, tir_Y_Jdeux = 0, nbTouchePorteAvionJdeux = 0, nbToucheCroiseurJdeux = 0, nbToucheSousMarinJdeux = 0, nbToucheDestroyerJdeux = 0, nbToucheTorpilleurJdeux = 0;
+        boolean coulePorteAvionJdeux = false, couleCroiseurJdeux = false, couleSousMarinJdeux = false, couleDestroyerJdeux = false, couleTorpilleurJdeux = false;
+        boolean victoireJdeux = false;
+        ArrayList <Object> listeTirsJdeux = new ArrayList <>() ;ArrayList<Object> listeTouchesCoulesJdeux = new ArrayList<>() ;
 
         System.out.println("Pseudo joueur 1 : ");
         pseudoJun = scannerJun.nextLine();
@@ -347,8 +352,10 @@ public class Main {
         //----------------------------------------------Choix tirs-------------------------------------------------------
 
 
-        while (!(coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun)) {
+        while (!(coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun)
+        || !(coulePorteAvionJdeux && couleCroiseurJdeux && couleDestroyerJdeux && couleSousMarinJdeux )) {
 
+        //------------------------------------Tour J1---------------------------------------------------------------
             System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
             tir_X_Jun = scannerJun.nextInt();
 
@@ -356,73 +363,220 @@ public class Main {
             tir_Y_Jun = scannerJun.nextInt();
 
 
-            liste.add("[" + tir_X_Jun + "]\t");
-            liste.add("[" + tir_Y_Jun + "]\t\n");
+            listeTirsJun.add("[" + tir_X_Jun + "]\t");
+            listeTirsJun.add("[" + tir_Y_Jun + "]\t\n");
 
             //contientBateau()  Porte-Avion
             if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Porte-Avions")) {
                 System.out.println("Touché\n");
-                nbTouchePorteAvionJun ++;
-                estTouche = true ;
+                nbTouchePorteAvionJun++;
+                estTouche = true;
+                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
                 if (nbTouchePorteAvionJun == 5) {
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jun + "]\t\n");
                     coulePorteAvionJun = true;
+                    System.out.println("Porte-Avion coulé !\n");
+                }
+            } else if (grilleJdeux[tir_X_Jun][tir_Y_Jun].equals("  ~  ")) {
+                System.out.println("Eau");
+            }
+            //Croiseur
+            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Croiseur")) {
+                System.out.println("Touché\n");
+                nbToucheCroiseurJun++;
+                estTouche = true;
+                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                if (nbToucheCroiseurJun == 4) {
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    couleCroiseurJun = true;
+                    System.out.println("Croiseur coulé !\n");
+                }
+            }else if (grilleJdeux[tir_X_Jun][tir_Y_Jun].equals("  ~  ")) {
+                System.out.println("Eau");
+            }
+            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Sous-marin")) {
+                System.out.println("Touché \n");
+                nbToucheSousMarinJun++;
+                estTouche = true;
+                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                if (nbToucheSousMarinJun == 3) {
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    couleSousMarinJun = true;
+                    System.out.println("Sous-Marin coulé !\n");
+                }
+            }else if (grilleJdeux[tir_X_Jun][tir_Y_Jun].equals("  ~  ")) {
+                System.out.println("Eau");
+            }
+            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Destroyer")) {
+                System.out.println("Touché\n");
+                nbToucheDestroyerJun++;
+                estTouche = true;
+                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                if (nbToucheDestroyerJun == 3) {
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    couleDestroyerJun = true;
+                    System.out.println("Destroyer coulé !\n");
+                }
+            }else if (grilleJdeux[tir_X_Jun][tir_Y_Jun].equals("  ~  ")) {
+                System.out.println("Eau");
+            }
+            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Torpilleur")) {
+                System.out.println("Touché\n");
+                nbToucheTorpilleurJun++;
+                estTouche = true;
+                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                if (nbToucheTorpilleurJun == 2) {
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    couleTorpilleurJun = true;
+                    System.out.println("Torpilleur coulé !\n");
+                }
+            }
+
+
+            System.out.println('\n');
+
+            for (String[] ligneJun : grilleJun) {
+                System.out.println(Arrays.deepToString(ligneJun) + "\n");
+            }
+            System.out.println("----------------------------------------------------------------\n\n");
+            for (String[] ligneJdeux : grilleJdeux) {
+                System.out.println(Arrays.deepToString(ligneJdeux) + "\n");
+            }
+            //-------------------------------------Tour J2-------------------------------------------------
+            System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
+            tir_X_Jdeux = scannerJdeux.nextInt();
+
+            System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
+            tir_Y_Jdeux = scannerJdeux.nextInt();
+
+
+            listeTirsJdeux.add("[" + tir_X_Jdeux + "]\t");
+            listeTirsJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+
+            //contientBateau()  Porte-Avion
+            if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Porte-Avions")) {
+                System.out.println("Touché\n");
+                nbTouchePorteAvionJdeux++;
+                estTouche = true;
+                if (nbTouchePorteAvionJdeux == 5) {
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    coulePorteAvionJdeux = true;
                     System.out.println("Porte-Avion coulé !\n");
                 }
             }
 
             //Croiseur
-            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Croiseur")) {
+            if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Croiseur")) {
                 System.out.println("Touché\n");
-                nbToucheCroiseurJun += 1;
-                estTouche=true ;
-                if (nbToucheCroiseurJun == 4) {
-                    couleCroiseurJun = true;
+                nbToucheCroiseurJdeux++;
+                estTouche = true;
+                listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                if (nbToucheCroiseurJdeux == 4) {
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    couleCroiseurJdeux = true;
                     System.out.println("Croiseur coulé !\n");
                 }
-
-            }if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Sous-marin")) {
+            }
+            if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Sous-marin")) {
                 System.out.println("Touché \n");
-                nbToucheSousMarinJun += 1;
-                estTouche = true ;
-                if (nbToucheSousMarinJun == 3) {
-                    couleSousMarinJun = true;
+                nbToucheSousMarinJdeux++;
+                estTouche = true;
+                listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                if (nbToucheSousMarinJdeux == 3) {
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    couleSousMarinJdeux = true;
                     System.out.println("Sous-Marin coulé !\n");
                 }
-
-            }if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Destroyer")) {
+            }
+            if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Destroyer")) {
                 System.out.println("Touché\n");
-                nbToucheDestroyerJun += 1;
-                estTouche = true ;
-                if (nbToucheDestroyerJun == 3) {
-                    couleDestroyerJun = true;
+                nbToucheDestroyerJdeux++;
+                estTouche = true;
+                if (nbToucheDestroyerJdeux == 3) {
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    couleDestroyerJdeux = true;
                     System.out.println("Destroyer coulé !\n");
                 }
-
-            }if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Torpilleur")) {
+            }
+            if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Torpilleur")) {
                 System.out.println("Touché\n");
-                nbToucheTorpilleurJun +=1;
-                estTouche = true ;
-                if (nbToucheTorpilleurJun == 2) {
-                    couleTorpilleurJun = true;
+                nbToucheTorpilleurJdeux++;
+                estTouche = true;
+                listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                if (nbToucheTorpilleurJdeux == 2) {
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    couleTorpilleurJdeux = true;
                     System.out.println("Torpilleur coulé !\n");
                 }
-            } if(!estTouche){
-                System.out.println("Eau");
             }
+
+
+            System.out.println('\n');
+            for (String[] ligneJun : grilleJun) {
+                System.out.println(Arrays.deepToString(ligneJun) + "\n");
+            }
+            System.out.println("----------------------------------------------------------------\n\n");
             for (String[] ligneJdeux : grilleJdeux) {
                 System.out.println(Arrays.deepToString(ligneJdeux) + "\n");
             }
+
+            if (coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun) {
+                victoireJun = true;
+                System.out.println(pseudoJun + " a gagné \n");
+                break ;
+            } else if (coulePorteAvionJdeux && couleCroiseurJdeux && couleDestroyerJdeux && couleSousMarinJdeux && couleTorpilleurJdeux) {
+                victoireJdeux = true;
+                System.out.println(pseudoJdeux + " a gagné \n");
+                break ;
+            }
+
         }
 
-
-
-        if (coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun) {
-            victoireJun = true;
-            System.out.println(pseudoJun + " a gagné \n");
+        System.out.println("Historique des tirs effectués du joueur 1 : ");
+        for (Object coord : listeTirsJun) {
+            countLigneListe++;
+            System.out.print(coord);
+            if (countLigneListe % 2 == 0) {
+                System.out.print('\n');
+            }
         }
-
-        System.out.println("Historique des choix du joueur 1 : ");
-        for (Object coord : liste) {
+        System.out.println("Historique des touchés/coules effectués du joueur 1 : ");
+        for (Object coord : listeTouchesCoulesJun) {
+            countLigneListe++;
+            System.out.print(coord);
+            if (countLigneListe % 2 == 0) {
+                System.out.print('\n');
+            }
+        }
+        System.out.println("----------------------------");
+        System.out.println("Historique des tirs effectués du joueur 2 : ");
+        for (Object coord : listeTirsJdeux) {
+            countLigneListe++;
+            System.out.print(coord);
+            if (countLigneListe % 2 == 0) {
+                System.out.print('\n');
+            }
+        }
+        System.out.println("Historique des touches coules effectués du joueur 2 : ");
+        for (Object coord : listeTouchesCoulesJdeux) {
             countLigneListe++;
             System.out.print(coord);
             if (countLigneListe % 2 == 0) {
@@ -586,7 +740,7 @@ public class Main {
                 return false;
             }
             if (grille[emplacement_x][emplacement_y + 2].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 2] = "SE ";
+                grille[emplacement_x][emplacement_y + 2] = "SE";
             } else {
                 System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 2) + "]");
                 return false;
