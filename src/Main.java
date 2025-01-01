@@ -6,7 +6,7 @@ import java.util.*;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        Scanner scannerJun = new Scanner(System.in), scannerJdeux = new Scanner(System.in);
+
         String pseudoJun = "", pseudoJdeux = "";
         String orientationPorteAvionJun = "", orientationCroiseurJun = "", orientationSousMarinJun = "", orientationDestroyerJun = "", orientationTorpilleurJun = "";
         boolean placementPorteAvionJun = false, placementCroiseurJun = false, placementSousMarinJun = false, placementDestroyerJun = false, placementTorpilleurJun = false;
@@ -14,10 +14,12 @@ public class Main {
         int coord_Y_PorteAvionJun = 0, coord_Y_CroiseurJun = 0, coord_Y_SousMarinJun = 0, coord_Y_DestroyerJun = 0, coord_Y_TorpilleurJun = 0;
         int tir_X_Jun = 0, tir_Y_Jun = 0, nbTouchePorteAvionJun = 0, nbToucheCroiseurJun = 0, nbToucheSousMarinJun = 0, nbToucheDestroyerJun = 0, nbToucheTorpilleurJun = 0;
         boolean coulePorteAvionJun = false, couleCroiseurJun = false, couleSousMarinJun = false, couleDestroyerJun = false, couleTorpilleurJun = false;
-        boolean estTouche = false;
         boolean victoireJun = false;
         ArrayList<Object> listeTirsJun = new ArrayList<>();
         ArrayList<Object> listeTouchesCoulesJun = new ArrayList<>();
+        String reponseJun = "";
+        boolean rejouer = false;
+        int nb_Tir_Jun = 0, nb_Touche_Coule_Jun = 0, nb_Victoire_Jun = 0, nb_Defaite_Jun = 0;
 
         int countLigneListe = 0;
 
@@ -31,506 +33,565 @@ public class Main {
         boolean victoireJdeux = false;
         ArrayList<Object> listeTirsJdeux = new ArrayList<>();
         ArrayList<Object> listeTouchesCoulesJdeux = new ArrayList<>();
+        boolean reponseJdeux = true;
+        int nb_tir_Jdeux = 0, nb_ToucheCoule_Jdeux = 0, nb_Defaite_Jdeux = 0, nb_Victoire_Jdeux = 0;
+
+        ArrayList<Object> listeVainqueurs = new ArrayList<>();
+        ArrayList<Object> listePerdants = new ArrayList<>();
+
+        int nb_Partie = 0;
+
+        Scanner scannerJun = new Scanner(System.in), scannerJdeux = new Scanner(System.in);
 
 
-        long debutJeu = Instant.now().getEpochSecond() ;
-        System.out.println("Pseudo joueur 1 : ");
-        pseudoJun = scannerJun.nextLine();
+        while (!(rejouer)) {
 
-        System.out.println("Pseudo joueur 2 : ");
-        pseudoJdeux = scannerJdeux.nextLine();
+            nb_Partie++;
 
-        //Configuration des grilles
-        String[][] grilleJun = new String[10][10];
-        String[][] grilleJdeux = new String[10][10];
+            long debutJeu = Instant.now().getEpochSecond();
+            System.out.println("Pseudo joueur 1 : ");
+            pseudoJun = scannerJun.next();
+
+            System.out.println("Pseudo joueur 2 : ");
+            pseudoJdeux = scannerJdeux.next();
+
+            //Configuration des grilles
+            String[][] grilleJun = new String[10][10];
+            String[][] grilleJdeux = new String[10][10];
 
 
-        for (int i = 0; i < grilleJun.length; i++) {
-            for (int j = 0; j < grilleJun.length; j++) {
-                grilleJun[i][j] = "  ~  ";
-                grilleJdeux[i][j] = "  ~  ";
+            for (int i = 0; i < grilleJun.length; i++) {
+                for (int j = 0; j < grilleJun.length; j++) {
+                    grilleJun[i][j] = "  ~  ";
+                    grilleJdeux[i][j] = "  ~  ";
+                }
             }
-        }
-        //------------------------------J1 : Placer le Porte Avions-----------------------------------------------------------
-        while (!placementPorteAvionJun) {
-            //Joueur 1
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Porte-Avions :");
-            coord_X_PorteAvionJun = scannerJun.nextInt();
-            while (coord_X_PorteAvionJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
+            //------------------------------J1 : Placer le Porte Avions-----------------------------------------------------------
+            while (!placementPorteAvionJun) {
+                //Joueur 1
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Porte-Avions :");
                 coord_X_PorteAvionJun = scannerJun.nextInt();
-            }
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne Y de votre Porte-Avions :");
-            coord_Y_PorteAvionJun = scannerJun.nextInt();
-            while (coord_Y_PorteAvionJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " : Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
+                while (coord_X_PorteAvionJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
+                    coord_X_PorteAvionJun = scannerJun.nextInt();
+                }
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne Y de votre Porte-Avions :");
                 coord_Y_PorteAvionJun = scannerJun.nextInt();
-            }
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Porte-Avions : ");
-            orientationPorteAvionJun = scannerJun.next();
-
-            while (!orientationPorteAvionJun.equalsIgnoreCase("H") && !orientationPorteAvionJun.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Porte-avion : ");
+                while (coord_Y_PorteAvionJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " : Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
+                    coord_Y_PorteAvionJun = scannerJun.nextInt();
+                }
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Porte-Avions : ");
                 orientationPorteAvionJun = scannerJun.next();
+
+                while (!orientationPorteAvionJun.equalsIgnoreCase("H") && !orientationPorteAvionJun.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Porte-avion : ");
+                    orientationPorteAvionJun = scannerJun.next();
+                }
+                placementPorteAvionJun = ajoutePorteAvion(grilleJun, coord_X_PorteAvionJun, coord_Y_PorteAvionJun, orientationPorteAvionJun);
+
             }
-            placementPorteAvionJun = ajoutePorteAvion(grilleJun, coord_X_PorteAvionJun, coord_Y_PorteAvionJun, orientationPorteAvionJun);
 
-        }
-
-        //-------------------------------------------J1 : Placer le Croiseur-----------------------------------------
-        while (!placementCroiseurJun) {
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Croiseur :");
-            coord_X_CroiseurJun = scannerJun.nextInt();
-
-            while (coord_X_CroiseurJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée X correcte pour le Croiseur :");
+            //-------------------------------------------J1 : Placer le Croiseur-----------------------------------------
+            while (!placementCroiseurJun) {
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Croiseur :");
                 coord_X_CroiseurJun = scannerJun.nextInt();
-            }
 
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne Y de votre Croiseur :");
-            coord_Y_CroiseurJun = scannerJun.nextInt();
+                while (coord_X_CroiseurJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée X correcte pour le Croiseur :");
+                    coord_X_CroiseurJun = scannerJun.nextInt();
+                }
 
-            while (coord_Y_CroiseurJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée Y correcte pour le Croiseur :");
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne Y de votre Croiseur :");
                 coord_Y_CroiseurJun = scannerJun.nextInt();
-            }
 
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Croiseur : ");
-            orientationCroiseurJun = scannerJun.next();
-            while (!orientationCroiseurJun.equalsIgnoreCase("H") && !orientationCroiseurJun.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
+                while (coord_Y_CroiseurJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée Y correcte pour le Croiseur :");
+                    coord_Y_CroiseurJun = scannerJun.nextInt();
+                }
+
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Croiseur : ");
                 orientationCroiseurJun = scannerJun.next();
+                while (!orientationCroiseurJun.equalsIgnoreCase("H") && !orientationCroiseurJun.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
+                    orientationCroiseurJun = scannerJun.next();
+                }
+
+
+                placementCroiseurJun = ajouteCroiseur(grilleJun, coord_X_CroiseurJun, coord_Y_CroiseurJun, orientationCroiseurJun);
             }
 
-
-            placementCroiseurJun = ajouteCroiseur(grilleJun, coord_X_CroiseurJun, coord_Y_CroiseurJun, orientationCroiseurJun);
-        }
-
-        System.out.println('\n');
-        //---------------------------------- J1 : PLacement Sous-Marin : 3 cases---------------------------------------------
-        while (!placementSousMarinJun) {
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Sous-Marin :");
-            coord_X_SousMarinJun = scannerJun.nextInt();
-            while (coord_X_SousMarinJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+            System.out.println('\n');
+            //---------------------------------- J1 : PLacement Sous-Marin : 3 cases---------------------------------------------
+            while (!placementSousMarinJun) {
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Sous-Marin :");
                 coord_X_SousMarinJun = scannerJun.nextInt();
-            }
-            System.out.println(pseudoJun + " Veuillez saisir la coordonne Y de votre Sous-Marin :");
-            coord_Y_SousMarinJun = scannerJun.nextInt();
-            while (coord_Y_SousMarinJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+                while (coord_X_SousMarinJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+                    coord_X_SousMarinJun = scannerJun.nextInt();
+                }
+                System.out.println(pseudoJun + " Veuillez saisir la coordonne Y de votre Sous-Marin :");
                 coord_Y_SousMarinJun = scannerJun.nextInt();
-            }
+                while (coord_Y_SousMarinJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+                    coord_Y_SousMarinJun = scannerJun.nextInt();
+                }
 
-            System.out.println(pseudoJun + " : Veuillez saisir l'orientation de votre Sous-Marin : ");
-            orientationSousMarinJun = scannerJun.next();
-            while (!orientationSousMarinJun.equalsIgnoreCase("H") && !orientationSousMarinJun.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correct pour votre Sous-Marin : ");
+                System.out.println(pseudoJun + " : Veuillez saisir l'orientation de votre Sous-Marin : ");
                 orientationSousMarinJun = scannerJun.next();
+                while (!orientationSousMarinJun.equalsIgnoreCase("H") && !orientationSousMarinJun.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correct pour votre Sous-Marin : ");
+                    orientationSousMarinJun = scannerJun.next();
+                }
+                placementSousMarinJun = ajouteSousMarinOuDestroyer(grilleJun, coord_X_SousMarinJun, coord_Y_SousMarinJun, orientationSousMarinJun, "Sous-Marin");
             }
-            placementSousMarinJun = ajouteSousMarinOuDestroyer(grilleJun, coord_X_SousMarinJun, coord_Y_SousMarinJun, orientationSousMarinJun, "Sous-Marin");
-        }
 
-        System.out.println('\n');
-        //------------------------------------------J1 : Placement Croiseur : 3 cases --> Destroyer--------------------------------------------
-        while (!placementDestroyerJun) {
+            System.out.println('\n');
+            //------------------------------------------J1 : Placement Croiseur : 3 cases --> Destroyer--------------------------------------------
+            while (!placementDestroyerJun) {
 
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Destroyer  :");
-            coord_X_DestroyerJun = scannerJun.nextInt();
-            while (coord_X_DestroyerJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X de votre Destroyer : ");
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Destroyer  :");
                 coord_X_DestroyerJun = scannerJun.nextInt();
-            }
-            System.out.println("(" + pseudoJun + " Veuillez saisir la coordonne Y de votre Destroyer :");
-            coord_Y_DestroyerJun = scannerJun.nextInt();
-            while (coord_Y_DestroyerJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne Y correcte pour votre Destroyer :");
+                while (coord_X_DestroyerJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X de votre Destroyer : ");
+                    coord_X_DestroyerJun = scannerJun.nextInt();
+                }
+                System.out.println("(" + pseudoJun + " Veuillez saisir la coordonne Y de votre Destroyer :");
                 coord_Y_DestroyerJun = scannerJun.nextInt();
-            }
+                while (coord_Y_DestroyerJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne Y correcte pour votre Destroyer :");
+                    coord_Y_DestroyerJun = scannerJun.nextInt();
+                }
 
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Destroyeur : ");
-            orientationDestroyerJun = scannerJun.next();
-            while (orientationDestroyerJun.equalsIgnoreCase("H") && orientationDestroyerJun.equalsIgnoreCase("V")) {
-                System.out.println(pseudoJun + " Veuillez saisir une orientation correcte pour votre Destroyer : ");
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Destroyeur : ");
                 orientationDestroyerJun = scannerJun.next();
+                while (orientationDestroyerJun.equalsIgnoreCase("H") && orientationDestroyerJun.equalsIgnoreCase("V")) {
+                    System.out.println(pseudoJun + " Veuillez saisir une orientation correcte pour votre Destroyer : ");
+                    orientationDestroyerJun = scannerJun.next();
+                }
+                placementDestroyerJun = ajouteSousMarinOuDestroyer(grilleJun, coord_X_DestroyerJun, coord_Y_DestroyerJun, orientationDestroyerJun, "Destroyer");
             }
-            placementDestroyerJun = ajouteSousMarinOuDestroyer(grilleJun, coord_X_DestroyerJun, coord_Y_DestroyerJun, orientationDestroyerJun, "Destroyer");
-        }
 
-        System.out.println('\n');
-        //-----------------------------------J1 : Placement torpilleur : 2 cases----------------------------------------------
-        while (!placementTorpilleurJun) {
+            System.out.println('\n');
+            //-----------------------------------J1 : Placement torpilleur : 2 cases----------------------------------------------
+            while (!placementTorpilleurJun) {
 
-            System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Torpilleur  :");
-            coord_X_TorpilleurJun = scannerJun.nextInt();
-            while (coord_X_TorpilleurJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X de votre Torpilleur :");
+                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Torpilleur  :");
                 coord_X_TorpilleurJun = scannerJun.nextInt();
-            }
-            System.out.println(pseudoJun + " Veuillez saisir la coordonne Y de votre Torpilleur  :");
-            coord_Y_TorpilleurJun = scannerJun.nextInt();
-            while (coord_Y_TorpilleurJun > 9) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne Y correcte pour votre Torpilleur :");
+                while (coord_X_TorpilleurJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X de votre Torpilleur :");
+                    coord_X_TorpilleurJun = scannerJun.nextInt();
+                }
+                System.out.println(pseudoJun + " Veuillez saisir la coordonne Y de votre Torpilleur  :");
                 coord_Y_TorpilleurJun = scannerJun.nextInt();
-            }
+                while (coord_Y_TorpilleurJun > 9) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne Y correcte pour votre Torpilleur :");
+                    coord_Y_TorpilleurJun = scannerJun.nextInt();
+                }
 
-            System.out.println("(" + pseudoJun + " Veuillez saisir l'orientation de votre Torpilleur : ");
-            orientationTorpilleurJun = scannerJun.next();
-            while (orientationTorpilleurJun.equalsIgnoreCase("H") && orientationTorpilleurJun.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
+                System.out.println("(" + pseudoJun + " Veuillez saisir l'orientation de votre Torpilleur : ");
                 orientationTorpilleurJun = scannerJun.next();
+                while (orientationTorpilleurJun.equalsIgnoreCase("H") && orientationTorpilleurJun.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
+                    orientationTorpilleurJun = scannerJun.next();
+                }
+                placementTorpilleurJun = ajouteTorpilleur(grilleJun, coord_X_TorpilleurJun, coord_Y_TorpilleurJun, orientationTorpilleurJun);
             }
-            placementTorpilleurJun = ajouteTorpilleur(grilleJun, coord_X_TorpilleurJun, coord_Y_TorpilleurJun, orientationTorpilleurJun);
-        }
 
-        System.out.println('\n');
-        //------------------------------J2 : Placer le Porte Avions-----------------------------------------------------------
-        while (!placementPorteAvionJdeux) {
-            //Joueur 1
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Porte-Avions :");
-            coord_X_PorteAvionJdeux = scannerJdeux.nextInt();
-            while (coord_X_PorteAvionJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
+            System.out.println('\n');
+            //------------------------------J2 : Placer le Porte Avions-----------------------------------------------------------
+            while (!placementPorteAvionJdeux) {
+                //Joueur 1
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Porte-Avions :");
                 coord_X_PorteAvionJdeux = scannerJdeux.nextInt();
-            }
-            System.out.println(pseudoJdeux + " Veuillez saisir la coordonne Y de votre Porte-Avions :");
-            coord_Y_PorteAvionJdeux = scannerJdeux.nextInt();
-            while (coord_Y_PorteAvionJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
+                while (coord_X_PorteAvionJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
+                    coord_X_PorteAvionJdeux = scannerJdeux.nextInt();
+                }
+                System.out.println(pseudoJdeux + " Veuillez saisir la coordonne Y de votre Porte-Avions :");
                 coord_Y_PorteAvionJdeux = scannerJdeux.nextInt();
-            }
-            System.out.println("(" + pseudoJdeux + ")" + "  Veuillez saisir l'orientation de votre Porte-Avions : ");
-            orientationPorteAvionJdeux = scannerJdeux.next();
-
-            while (!orientationPorteAvionJdeux.equalsIgnoreCase("H") && !orientationPorteAvionJdeux.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Porte-avion : ");
+                while (coord_Y_PorteAvionJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
+                    coord_Y_PorteAvionJdeux = scannerJdeux.nextInt();
+                }
+                System.out.println("(" + pseudoJdeux + ")" + "  Veuillez saisir l'orientation de votre Porte-Avions : ");
                 orientationPorteAvionJdeux = scannerJdeux.next();
+
+                while (!orientationPorteAvionJdeux.equalsIgnoreCase("H") && !orientationPorteAvionJdeux.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Porte-avion : ");
+                    orientationPorteAvionJdeux = scannerJdeux.next();
+                }
+                placementPorteAvionJdeux = ajoutePorteAvion(grilleJdeux, coord_X_PorteAvionJdeux, coord_Y_PorteAvionJdeux, orientationPorteAvionJdeux);
+
             }
-            placementPorteAvionJdeux = ajoutePorteAvion(grilleJdeux, coord_X_PorteAvionJdeux, coord_Y_PorteAvionJdeux, orientationPorteAvionJdeux);
 
-        }
-
-        System.out.println('\n');
-        //-------------------------------------------J2 : Placer le Croiseur-----------------------------------------
-        while (!placementCroiseurJdeux) {
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Croiseur :");
-            coord_X_CroiseurJdeux = scannerJdeux.nextInt();
-
-            while (coord_X_CroiseurJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée X correcte pour le Croiseur :");
+            System.out.println('\n');
+            //-------------------------------------------J2 : Placer le Croiseur-----------------------------------------
+            while (!placementCroiseurJdeux) {
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Croiseur :");
                 coord_X_CroiseurJdeux = scannerJdeux.nextInt();
-            }
 
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Croiseur :");
-            coord_Y_CroiseurJdeux = scannerJdeux.nextInt();
+                while (coord_X_CroiseurJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée X correcte pour le Croiseur :");
+                    coord_X_CroiseurJdeux = scannerJdeux.nextInt();
+                }
 
-            while (coord_Y_CroiseurJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée Y correcte pour le Cuirasse :");
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Croiseur :");
                 coord_Y_CroiseurJdeux = scannerJdeux.nextInt();
-            }
 
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Croiseur : ");
-            orientationCroiseurJdeux = scannerJdeux.next();
-            while (!orientationCroiseurJdeux.equalsIgnoreCase("H") && !orientationCroiseurJdeux.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Cuirasse : ");
+                while (coord_Y_CroiseurJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée Y correcte pour le Cuirasse :");
+                    coord_Y_CroiseurJdeux = scannerJdeux.nextInt();
+                }
+
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Croiseur : ");
                 orientationCroiseurJdeux = scannerJdeux.next();
+                while (!orientationCroiseurJdeux.equalsIgnoreCase("H") && !orientationCroiseurJdeux.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Cuirasse : ");
+                    orientationCroiseurJdeux = scannerJdeux.next();
+                }
+
+
+                placementCroiseurJdeux = ajouteCroiseur(grilleJdeux, coord_X_CroiseurJdeux, coord_Y_CroiseurJdeux, orientationCroiseurJdeux);
             }
 
-
-            placementCroiseurJdeux = ajouteCroiseur(grilleJdeux, coord_X_CroiseurJdeux, coord_Y_CroiseurJdeux, orientationCroiseurJdeux);
-        }
-
-        System.out.println('\n');
-        //---------------------------------- J2 : PLacement Sous-Marin : 3 cases---------------------------------------------
-        while (!placementSousMarinJdeux) {
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Sous-Marin :");
-            coord_X_SousMarinJdeux = scannerJdeux.nextInt();
-            while (coord_X_SousMarinJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+            System.out.println('\n');
+            //---------------------------------- J2 : PLacement Sous-Marin : 3 cases---------------------------------------------
+            while (!placementSousMarinJdeux) {
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Sous-Marin :");
                 coord_X_SousMarinJdeux = scannerJdeux.nextInt();
-            }
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Sous-Marin :");
-            coord_Y_SousMarinJdeux = scannerJdeux.nextInt();
-            while (coord_Y_SousMarinJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+                while (coord_X_SousMarinJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+                    coord_X_SousMarinJdeux = scannerJdeux.nextInt();
+                }
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Sous-Marin :");
                 coord_Y_SousMarinJdeux = scannerJdeux.nextInt();
-            }
+                while (coord_Y_SousMarinJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
+                    coord_Y_SousMarinJdeux = scannerJdeux.nextInt();
+                }
 
-            System.out.println("(" + pseudoJdeux + ")" + "  Veuillez saisir l'orientation de votre Sous-Marin : ");
-            orientationSousMarinJdeux = scannerJdeux.next();
-            while (!orientationSousMarinJdeux.equalsIgnoreCase("H") && !orientationSousMarinJdeux.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correct pour votre Sous-Marin : ");
+                System.out.println("(" + pseudoJdeux + ")" + "  Veuillez saisir l'orientation de votre Sous-Marin : ");
                 orientationSousMarinJdeux = scannerJdeux.next();
+                while (!orientationSousMarinJdeux.equalsIgnoreCase("H") && !orientationSousMarinJdeux.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correct pour votre Sous-Marin : ");
+                    orientationSousMarinJdeux = scannerJdeux.next();
+                }
+                placementSousMarinJdeux = ajouteSousMarinOuDestroyer(grilleJdeux, coord_X_SousMarinJdeux, coord_Y_SousMarinJdeux, orientationSousMarinJdeux, "Sous-Marin");
             }
-            placementSousMarinJdeux = ajouteSousMarinOuDestroyer(grilleJdeux, coord_X_SousMarinJdeux, coord_Y_SousMarinJdeux, orientationSousMarinJdeux, "Sous-Marin");
-        }
 
-        //------------------------------------------J2 : Placement Destroyer : 3 cases--------------------------------------------
-        while (!placementDestroyerJdeux) {
+            //------------------------------------------J2 : Placement Destroyer : 3 cases--------------------------------------------
+            while (!placementDestroyerJdeux) {
 
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Destroyer :");
-            coord_X_DestroyerJdeux = scannerJdeux.nextInt();
-            while (coord_X_DestroyerJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + " Veuillez saisir une coordonne X de votre Destroyer :");
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Destroyer :");
                 coord_X_DestroyerJdeux = scannerJdeux.nextInt();
-            }
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Destroyer  :");
-            coord_Y_DestroyerJdeux = scannerJdeux.nextInt();
-            while (coord_Y_DestroyerJdeux > 9) {
-                System.out.println(pseudoJdeux + " Veuillez saisir une coordonne Y correcte pour votre Destroyer :");
+                while (coord_X_DestroyerJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + " Veuillez saisir une coordonne X de votre Destroyer :");
+                    coord_X_DestroyerJdeux = scannerJdeux.nextInt();
+                }
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Destroyer  :");
                 coord_Y_DestroyerJdeux = scannerJdeux.nextInt();
-            }
+                while (coord_Y_DestroyerJdeux > 9) {
+                    System.out.println(pseudoJdeux + " Veuillez saisir une coordonne Y correcte pour votre Destroyer :");
+                    coord_Y_DestroyerJdeux = scannerJdeux.nextInt();
+                }
 
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Destroyer : ");
-            orientationDestroyerJdeux = scannerJdeux.next();
-            while (orientationCroiseurJdeux.equalsIgnoreCase("H") && orientationCroiseurJdeux.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Destroyer : ");
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Destroyer : ");
                 orientationDestroyerJdeux = scannerJdeux.next();
+                while (orientationCroiseurJdeux.equalsIgnoreCase("H") && orientationCroiseurJdeux.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Destroyer : ");
+                    orientationDestroyerJdeux = scannerJdeux.next();
+                }
+                placementDestroyerJdeux = ajouteSousMarinOuDestroyer(grilleJdeux, coord_X_DestroyerJdeux, coord_Y_DestroyerJdeux, orientationDestroyerJdeux, "Destroyer");
             }
-            placementDestroyerJdeux = ajouteSousMarinOuDestroyer(grilleJdeux, coord_X_DestroyerJdeux, coord_Y_DestroyerJdeux, orientationDestroyerJdeux, "Destroyer");
-        }
 
-        //-----------------------------------J2 : Placement torpilleur : 2 cases----------------------------------------------
-        while (!placementTorpilleurJdeux) {
+            //-----------------------------------J2 : Placement torpilleur : 2 cases----------------------------------------------
+            while (!placementTorpilleurJdeux) {
 
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Torpilleur  :");
-            coord_X_TorpilleurJdeux = scannerJdeux.nextInt();
-            while (coord_X_TorpilleurJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X de votre Torpilleur :");
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Torpilleur  :");
                 coord_X_TorpilleurJdeux = scannerJdeux.nextInt();
-            }
-            System.out.println("(" + pseudoJdeux + ")" + " : Veuillez saisir la coordonne Y de votre Torpilleur  :");
-            coord_Y_TorpilleurJdeux = scannerJdeux.nextInt();
-            while (coord_Y_TorpilleurJdeux > 9) {
-                System.out.println("(" + pseudoJdeux + ")" + " : Veuillez saisir une coordonne Y correcte pour votre Torpilleur :");
+                while (coord_X_TorpilleurJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X de votre Torpilleur :");
+                    coord_X_TorpilleurJdeux = scannerJdeux.nextInt();
+                }
+                System.out.println("(" + pseudoJdeux + ")" + " : Veuillez saisir la coordonne Y de votre Torpilleur  :");
                 coord_Y_TorpilleurJdeux = scannerJdeux.nextInt();
-            }
+                while (coord_Y_TorpilleurJdeux > 9) {
+                    System.out.println("(" + pseudoJdeux + ")" + " : Veuillez saisir une coordonne Y correcte pour votre Torpilleur :");
+                    coord_Y_TorpilleurJdeux = scannerJdeux.nextInt();
+                }
 
-            System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Torpilleur : ");
-            orientationTorpilleurJdeux = scannerJdeux.next();
-            while (orientationTorpilleurJdeux.equalsIgnoreCase("H") && orientationTorpilleurJdeux.equalsIgnoreCase("V")) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
+                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Torpilleur : ");
                 orientationTorpilleurJdeux = scannerJdeux.next();
-            }
-            placementTorpilleurJdeux = ajouteTorpilleur(grilleJdeux, coord_X_TorpilleurJdeux, coord_Y_TorpilleurJdeux, orientationTorpilleurJdeux);
-        }
-
-
-        //----------------------------------------------Choix tirs-------------------------------------------------------
-
-
-        while (true) {
-
-
-            //------------------------------------Tour J1---------------------------------------------------------------
-            System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
-            tir_X_Jun = scannerJun.nextInt();
-
-
-            System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
-            tir_Y_Jun = scannerJun.nextInt();
-
-
-
-            listeTirsJun.add("[" + tir_X_Jun + "]\t");
-            listeTirsJun.add("[" + tir_Y_Jun + "]\t\n");
-
-            listeTirsJun.add("[" + tir_X_Jun + "]\t");
-            listeTirsJun.add("[" + tir_Y_Jun + "]\t\n");
-
-            //contientBateau()  Porte-Avion
-            if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Porte-Avions")) {
-                System.out.println("Touché\n");
-                nbTouchePorteAvionJun++;
-                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
-                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
-                if (nbTouchePorteAvionJun == 5) {
-                    coulePorteAvionJun = true;
-                    System.out.println("Porte-Avion coulé !\n");
+                while (orientationTorpilleurJdeux.equalsIgnoreCase("H") && orientationTorpilleurJdeux.equalsIgnoreCase("V")) {
+                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
+                    orientationTorpilleurJdeux = scannerJdeux.next();
                 }
+                placementTorpilleurJdeux = ajouteTorpilleur(grilleJdeux, coord_X_TorpilleurJdeux, coord_Y_TorpilleurJdeux, orientationTorpilleurJdeux);
             }
 
-            //Croiseur
-            else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Croiseur")) {
-                System.out.println("Touché\n");
-                nbToucheCroiseurJun++;
-                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
-                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
-                if (nbToucheCroiseurJun == 4) {
-                    couleCroiseurJun = true;
-                    System.out.println("Croiseur coulé !\n");
+
+            //----------------------------------------------Choix tirs-------------------------------------------------------
+
+
+            while (true) {
+
+
+                //------------------------------------Tour J1---------------------------------------------------------------
+                System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
+                tir_X_Jun = scannerJun.nextInt();
+
+
+                System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
+                tir_Y_Jun = scannerJun.nextInt();
+
+
+                listeTirsJun.add("[" + tir_X_Jun + "]\t");
+                listeTirsJun.add("[" + tir_Y_Jun + "]\t\n");
+
+                listeTirsJun.add("[" + tir_X_Jun + "]\t");
+                listeTirsJun.add("[" + tir_Y_Jun + "]\t\n");
+
+                //contientBateau()  Porte-Avion
+                if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Porte-Avions")) {
+                    System.out.println("Touché\n");
+                    nbTouchePorteAvionJun++;
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    if (nbTouchePorteAvionJun == 5) {
+                        coulePorteAvionJun = true;
+                        System.out.println("Porte-Avion coulé !\n");
+                    }
                 }
-            } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Sous-marin")) {
-                System.out.println("Touché \n");
-                nbToucheSousMarinJun++;
-                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
-                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
-                if (nbToucheSousMarinJun == 3) {
-                    couleSousMarinJun = true;
-                    System.out.println("Sous-Marin coulé !\n");
+
+                //Croiseur
+                else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Croiseur")) {
+                    System.out.println("Touché\n");
+                    nbToucheCroiseurJun++;
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    if (nbToucheCroiseurJun == 4) {
+                        couleCroiseurJun = true;
+                        System.out.println("Croiseur coulé !\n");
+                    }
+                } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Sous-marin")) {
+                    System.out.println("Touché \n");
+                    nbToucheSousMarinJun++;
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    if (nbToucheSousMarinJun == 3) {
+                        couleSousMarinJun = true;
+                        System.out.println("Sous-Marin coulé !\n");
+                    }
+                } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Destroyer")) {
+                    System.out.println("Touché\n");
+                    nbToucheDestroyerJun++;
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    if (nbToucheDestroyerJun == 3) {
+                        couleDestroyerJun = true;
+                        System.out.println("Destroyer coulé !\n");
+                    }
+                } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Torpilleur")) {
+                    System.out.println("Touché\n");
+                    nbToucheTorpilleurJun++;
+                    listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
+                    listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
+                    if (nbToucheTorpilleurJun == 2) {
+                        couleTorpilleurJun = true;
+                        System.out.println("Torpilleur coulé !\n");
+                    }
+                } else {
+                    System.out.println("EAU");
                 }
-            } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Destroyer")) {
-                System.out.println("Touché\n");
-                nbToucheDestroyerJun++;
-                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
-                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
-                if (nbToucheDestroyerJun == 3) {
-                    couleDestroyerJun = true;
-                    System.out.println("Destroyer coulé !\n");
+
+
+                for (int i = 0; i < grilleJun.length; i++) {
+                    System.out.println(Arrays.deepToString(grilleJun[i]) + "              " + Arrays.deepToString(grilleJdeux[i]) + '\n');
                 }
-            } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Torpilleur")) {
-                System.out.println("Touché\n");
-                nbToucheTorpilleurJun++;
-                listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
-                listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
-                if (nbToucheTorpilleurJun == 2) {
-                    couleTorpilleurJun = true;
-                    System.out.println("Torpilleur coulé !\n");
+
+                if (coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun) {
+                    victoireJun = true;
+                    System.out.println(pseudoJun + " a gagné \n");
+                    nb_Victoire_Jun++;
+                    nb_Defaite_Jdeux++;
+                    listeVainqueurs.add(pseudoJun);
+                    listeVainqueurs.add(pseudoJdeux);
+                    break;
                 }
+
+
+                //-------------------------------------Tour J2-------------------------------------------------
+
+                System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
+                tir_X_Jdeux = scannerJdeux.nextInt();
+
+
+                System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
+                tir_Y_Jdeux = scannerJdeux.nextInt();
+
+                listeTirsJdeux.add("[" + tir_X_Jdeux + "]\t");
+                listeTirsJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+
+                //contientBateau()
+                if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Porte-Avions")) {
+                    System.out.println("Touché\n");
+                    nbTouchePorteAvionJdeux++;
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    if (nbTouchePorteAvionJdeux == 5) {
+                        coulePorteAvionJdeux = true;
+                        System.out.println("Porte-Avion coulé !\n");
+                    }
+                }
+
+
+                //Croiseur
+                else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Croiseur")) {
+                    System.out.println("Touché\n");
+                    nbToucheCroiseurJdeux++;
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    if (nbToucheCroiseurJdeux == 4) {
+                        couleCroiseurJdeux = true;
+                        System.out.println("Croiseur coulé !\n");
+                    }
+                } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Sous-marin")) {
+                    System.out.println("Touché \n");
+                    nbToucheSousMarinJdeux++;
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    if (nbToucheSousMarinJdeux == 3) {
+                        listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                        listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                        couleSousMarinJdeux = true;
+                        System.out.println("Sous-Marin coulé !\n");
+                    }
+                } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Destroyer")) {
+                    System.out.println("Touché\n");
+                    nbToucheDestroyerJdeux++;
+                    if (nbToucheDestroyerJdeux == 3) {
+                        listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                        listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                        couleDestroyerJdeux = true;
+                        System.out.println("Destroyer coulé !\n");
+                    }
+                } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Torpilleur")) {
+                    System.out.println("Touché\n");
+                    nbToucheTorpilleurJdeux++;
+                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                    if (nbToucheTorpilleurJdeux == 2) {
+                        listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
+                        listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
+                        couleTorpilleurJdeux = true;
+                        System.out.println("Torpilleur coulé !\n");
+                    }
+                } else {
+                    System.out.println("Eau");
+                }
+
+
+                for (int i = 0; i < grilleJun.length; i++) {
+                    System.out.println(Arrays.deepToString(grilleJun[i]) + "              " + Arrays.deepToString(grilleJdeux[i]) + '\n');
+                }
+
+                if (coulePorteAvionJdeux && couleCroiseurJdeux && couleDestroyerJdeux && couleSousMarinJdeux && couleTorpilleurJdeux) {
+                    victoireJun = true;
+                    System.out.println(pseudoJdeux + " a gagné \n");
+                    nb_Victoire_Jdeux++;
+                    nb_Defaite_Jun++;
+                    listeVainqueurs.add(pseudoJdeux);
+                    listePerdants.add(pseudoJun);
+                    break;
+                }
+            }
+
+            long finJeu = Instant.now().getEpochSecond();
+            long totalSecondes = finJeu - debutJeu;
+            int heures = (int) totalSecondes / 3600;
+            int minutes = (int) (totalSecondes % 3600) / 60;
+            int secondes = (int) totalSecondes % 60;
+
+            System.out.print('\n');
+
+            System.out.println("Historique des tirs effectués du joueur 1 : ");
+            for (Object coordTirJun : listeTirsJun) {
+                countLigneListe++;
+                System.out.print(coordTirJun);
+                if (countLigneListe % 2 == 0) {
+                    System.out.print('\n');
+                    nb_Tir_Jun++;
+                }
+            }
+            System.out.print('\n');
+            System.out.println("Historique des touchés/coules effectués du joueur 1 : ");
+            for (Object coordToucheCouleJun : listeTouchesCoulesJun) {
+                countLigneListe++;
+                System.out.print(coordToucheCouleJun);
+                if (countLigneListe % 2 == 0) {
+                    System.out.print('\n');
+                    nb_Touche_Coule_Jun++;
+                }
+            }
+            System.out.print('\n');
+
+            System.out.println("--------------------------------");
+            System.out.println("Historique des tirs effectués du joueur 2 : ");
+            for (Object coordTirJdeux : listeTirsJdeux) {
+                countLigneListe++;
+                System.out.print(coordTirJdeux);
+                if (countLigneListe % 2 == 0) {
+                    System.out.print('\n');
+                    nb_tir_Jdeux++;
+                }
+            }
+            System.out.print('\n');
+            System.out.println("Historique des touches/coules effectués du joueur 2 : ");
+            for (Object coordToucheCouleJdeux : listeTouchesCoulesJdeux) {
+                countLigneListe++;
+                System.out.print(coordToucheCouleJdeux);
+                if (countLigneListe % 2 == 0) {
+                    System.out.print('\n');
+                    nb_ToucheCoule_Jdeux++;
+                }
+            }
+            System.out.println("-----------------Statistiques-------------------------------------------- ");
+
+            for (Object vainqueur : listeVainqueurs) {
+                for (Object perdant : listePerdants) {
+                    System.out.println("Vainqueur : " + vainqueur);
+                    System.out.println("Perdant : " + perdant);
+
+                    System.out.println("Durée de la partie " + (nb_Partie) + " : "
+                            + heures+" heures " + minutes + " minutes " + secondes + " secondes");
+                }
+            }
+            System.out.println(pseudoJun.toUpperCase());
+            System.out.println("NOmbre de tirs : " + nb_Tir_Jun);
+            System.out.println("Nombre de touche/coule : " + nb_Touche_Coule_Jun);
+            float ratioJun = (float) nb_Touche_Coule_Jun / nb_Tir_Jun;
+            System.out.println("Ratio précision tir : " + (ratioJun * 100) + "%");
+
+            System.out.println('\n');
+
+            System.out.println(pseudoJdeux.toUpperCase());
+            System.out.println("NOmbre de tirs : " + nb_tir_Jdeux);
+            System.out.println("Nombre de touche/coule : " + nb_ToucheCoule_Jdeux);
+            float ratioJdeux = (float) nb_ToucheCoule_Jdeux / nb_tir_Jdeux;
+            System.out.println("Ratio précision tir : " + (ratioJdeux * 100) + "%");
+
+            System.out.println("J1 : Voulez-vous rejouer (O/N) ? ");
+            reponseJun = scannerJun.next();
+
+            if (reponseJun.equals("O") || reponseJun.equals("o")) {
+                continue;
             } else {
-                System.out.println("EAU");
-            }
-
-
-            for (int i = 0; i < grilleJun.length; i++) {
-                System.out.println(Arrays.deepToString(grilleJun[i]) + "              " + Arrays.deepToString(grilleJdeux[i]) + '\n');
-            }
-
-            if (coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun) {
-                victoireJun = true;
-                System.out.println(pseudoJun + " a gagné \n");
+                System.out.println("FIN");
                 break;
             }
-
-
-            //-------------------------------------Tour J2-------------------------------------------------
-
-            System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
-            tir_X_Jdeux = scannerJdeux.nextInt();
-
-
-            System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee Y  : ") ;
-            tir_Y_Jdeux = scannerJdeux.nextInt();
-
-            listeTirsJdeux.add("[" + tir_X_Jdeux + "]\t");
-            listeTirsJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-
-            //contientBateau()
-            if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Porte-Avions")) {
-                System.out.println("Touché\n");
-                nbTouchePorteAvionJdeux++;
-                listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
-                listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                if (nbTouchePorteAvionJdeux == 5) {
-                    coulePorteAvionJdeux = true;
-                    System.out.println("Porte-Avion coulé !\n");
-                }
-            }
-
-
-            //Croiseur
-            else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Croiseur")) {
-                System.out.println("Touché\n");
-                nbToucheCroiseurJdeux++;
-                listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
-                listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                if (nbToucheCroiseurJdeux == 4) {
-                    couleCroiseurJdeux = true;
-                    System.out.println("Croiseur coulé !\n");
-                }
-            } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Sous-marin")) {
-                System.out.println("Touché \n");
-                nbToucheSousMarinJdeux++;
-                listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
-                listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                if (nbToucheSousMarinJdeux == 3) {
-                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
-                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                    couleSousMarinJdeux = true;
-                    System.out.println("Sous-Marin coulé !\n");
-                }
-            } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Destroyer")) {
-                System.out.println("Touché\n");
-                nbToucheDestroyerJdeux++;
-                if (nbToucheDestroyerJdeux == 3) {
-                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
-                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                    couleDestroyerJdeux = true;
-                    System.out.println("Destroyer coulé !\n");
-                }
-            } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Torpilleur")) {
-                System.out.println("Touché\n");
-                nbToucheTorpilleurJdeux++;
-                listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
-                listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                if (nbToucheTorpilleurJdeux == 2) {
-                    listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
-                    listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                    couleTorpilleurJdeux = true;
-                    System.out.println("Torpilleur coulé !\n");
-                }
-            } else {
-                System.out.println("Eau");
-            }
-
-
-            for (int i = 0; i < grilleJun.length; i++) {
-                System.out.println(Arrays.deepToString(grilleJun[i]) + "              " + Arrays.deepToString(grilleJdeux[i]) + '\n');
-            }
-
-            if (coulePorteAvionJdeux && couleCroiseurJdeux && couleDestroyerJdeux && couleSousMarinJdeux && couleTorpilleurJdeux) {
-                victoireJun = true;
-                System.out.println(pseudoJdeux + " a gagné \n");
-                break;
-            }
         }
-        long finJeu = Instant.now().getEpochSecond() ;
-        long calculTemps = finJeu - debutJeu ;
-        System.out.print('\n');
-
-        System.out.println("Historique des tirs effectués du joueur 1 : ");
-        for (Object coordTirJun : listeTirsJun) {
-            countLigneListe++;
-            System.out.print(coordTirJun);
-            if (countLigneListe % 2 == 0) {
-                System.out.print('\n');
-            }
-        }
-        System.out.print('\n');
-        System.out.println("Historique des touchés/coules effectués du joueur 1 : ");
-        for (Object coordToucheCouleJun : listeTouchesCoulesJun) {
-            countLigneListe++;
-            System.out.print(coordToucheCouleJun);
-            if (countLigneListe % 2 == 0) {
-                System.out.print('\n');
-            }
-        }
-        System.out.print('\n');
-
-        System.out.println("--------------------------------");
-        System.out.println("Historique des tirs effectués du joueur 2 : ");
-        for (Object coordTirJdeux : listeTirsJdeux) {
-            countLigneListe++;
-            System.out.print(coordTirJdeux);
-            if (countLigneListe % 2 == 0) {
-                System.out.print('\n');
-            }
-        }
-        System.out.print('\n');
-        System.out.println("Historique des touches/coules effectués du joueur 2 : ");
-        for (Object coordToucheCouleJdeux : listeTouchesCoulesJdeux) {
-            countLigneListe++;
-            System.out.print(coordToucheCouleJdeux);
-            if (countLigneListe % 2 == 0) {
-                System.out.print('\n');
-            }
-        }
-        System.out.println("Statistiques ");
-        System.out.println("Durée de la partie : "+calculTemps+" secondes");
     }
-
-
-
 
     public static boolean ajoutePorteAvion(String[][] grille, int emplacement_x, int emplacement_y, String orientation) {
 
@@ -1100,8 +1161,6 @@ public class Main {
     }
 
 }
-
-
 
 
 
