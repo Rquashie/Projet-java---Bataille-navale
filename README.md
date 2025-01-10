@@ -13,6 +13,6 @@ Fonctionnalités
 - Vérification des tirs pour savoir si un navire est touché et coulé ou si c'est de l'eau .
 - Affichage des grilles de chaque joueur après chaque tour .
 
-Préreqis
+Prérequis
 - Java
 - Un editeur de texte ou un IDE
