@@ -13,7 +13,6 @@ public class Main {
         int coord_X_PorteAvionJun = 0, coord_X_CroiseurJun = 0, coord_X_SousMarinJun = 0, coord_X_DestroyerJun = 0, coord_X_TorpilleurJun = 0;
         int coord_Y_PorteAvionJun = 0, coord_Y_CroiseurJun = 0, coord_Y_SousMarinJun = 0, coord_Y_DestroyerJun = 0, coord_Y_TorpilleurJun = 0;
         int tir_X_Jun = 0, tir_Y_Jun = 0, nbTouchePorteAvionJun = 0, nbToucheCroiseurJun = 0, nbToucheSousMarinJun = 0, nbToucheDestroyerJun = 0, nbToucheTorpilleurJun = 0;
-        boolean coulePorteAvionJun = false, couleCroiseurJun = false, couleSousMarinJun = false, couleDestroyerJun = false, couleTorpilleurJun = false;
         boolean victoireJun = false;
         ArrayList<Object> listeTirsJun = new ArrayList<>();
         ArrayList<Object> listeTouchesCoulesJun = new ArrayList<>();
@@ -29,7 +28,6 @@ public class Main {
         int coord_X_PorteAvionJdeux = 0, coord_X_CroiseurJdeux = 0, coord_X_SousMarinJdeux = 0, coord_X_DestroyerJdeux = 0, coord_X_TorpilleurJdeux = 0;
         int coord_Y_PorteAvionJdeux = 0, coord_Y_CroiseurJdeux = 0, coord_Y_SousMarinJdeux = 0, coord_Y_DestroyerJdeux = 0, coord_Y_TorpilleurJdeux = 0;
         int tir_X_Jdeux = 0, tir_Y_Jdeux = 0, nbTouchePorteAvionJdeux = 0, nbToucheCroiseurJdeux = 0, nbToucheSousMarinJdeux = 0, nbToucheDestroyerJdeux = 0, nbToucheTorpilleurJdeux = 0;
-        boolean coulePorteAvionJdeux = false, couleCroiseurJdeux = false, couleSousMarinJdeux = false, couleDestroyerJdeux = false, couleTorpilleurJdeux = false;
         boolean victoireJdeux = false;
         ArrayList<Object> listeTirsJdeux = new ArrayList<>();
         ArrayList<Object> listeTouchesCoulesJdeux = new ArrayList<>();
@@ -39,14 +37,74 @@ public class Main {
         ArrayList<Object> listeVainqueurs = new ArrayList<>();
         ArrayList<Object> listePerdants = new ArrayList<>();
 
+        boolean[] bateauxCoulesJun = new boolean[5];
+        bateauxCoulesJun[0] = false ; //PA
+        bateauxCoulesJun[1] = false ; //Croiseur
+        bateauxCoulesJun[2] = false ; //Sous-Marins
+        bateauxCoulesJun[3] = false ; //Destroyer
+        bateauxCoulesJun[4] = false ; // Torpilleur
+
+        boolean[] bateauxCoulesJdeux = new boolean[5];
+        bateauxCoulesJdeux[0] = false ; //PA
+        bateauxCoulesJdeux[1] = false ; //Croiseur
+        bateauxCoulesJdeux[2] = false ; //Sous-Marins
+        bateauxCoulesJdeux[3] = false ; //Destroyer
+        bateauxCoulesJdeux[4] = false ; // Torpilleur
+
+
+
+        String[] porteAvions = {"PO", "RT", "E", "AV", "ION"}; // Taille 5
+        int taillePA = 5;
+        String[] croiseur = {"CR", "OI", "SE", "UR"}; // Taille 4
+        int tailleCR = 4;
+        String[] sousMarin = {"SOUS", "MA", "RIN"}; // Taille 3
+        int tailleSM = 3;
+        String[] destroyer = {"DE", "STR", "OYER"}; // Taille 3
+        int tailleDestroyer = 3;
+        String[] torpilleur = {"TOR", "PILLEUR"}; // Taille 2
+        int tailleTorp = 2;
+
+        int[] coordonnees = new int[2];
+        int tailleGrille = 10;
+
+
         int nb_Partie = 0;
 
-        Scanner scannerJun = new Scanner(System.in), scannerJdeux = new Scanner(System.in);
+        Scanner scannerJun = new Scanner(System.in);
+        Scanner scannerJdeux = new Scanner(System.in);
 
 
-        while (!(rejouer)) {
 
+        do {
             nb_Partie++;
+             bateauxCoulesJun = new boolean[5];
+             bateauxCoulesJdeux = new boolean[5];
+
+            nbTouchePorteAvionJun = 0 ;
+            nbToucheCroiseurJun = 0 ;
+            nbToucheSousMarinJun = 0 ;
+            nbToucheDestroyerJun = 0 ;
+            nbToucheTorpilleurJun = 0 ;
+
+            nbTouchePorteAvionJdeux = 0 ;
+            nbToucheCroiseurJdeux = 0 ;
+            nbToucheSousMarinJdeux = 0 ;
+            nbToucheDestroyerJdeux = 0 ;
+            nbToucheTorpilleurJdeux = 0;
+            listeTirsJun.clear();
+            listeTouchesCoulesJun.clear();
+            listeTirsJdeux.clear();
+            listeTouchesCoulesJdeux.clear();
+
+            nb_tir_Jdeux = 0;
+            nb_ToucheCoule_Jdeux = 0;
+            nb_Tir_Jun = 0;
+            nb_Touche_Coule_Jun = 0;
+
+            tir_X_Jun = 0 ;
+            tir_Y_Jun = 0 ;
+            tir_X_Jdeux = 0 ;
+            tir_Y_Jdeux = 0 ;
 
             long debutJeu = Instant.now().getEpochSecond();
             System.out.println("Pseudo joueur 1 : ");
@@ -66,288 +124,167 @@ public class Main {
                     grilleJdeux[i][j] = "  ~  ";
                 }
             }
+
             //------------------------------J1 : Placer le Porte Avions-----------------------------------------------------------
-            while (!placementPorteAvionJun) {
-                //Joueur 1
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Porte-Avions :");
-                coord_X_PorteAvionJun = scannerJun.nextInt();
-                while (coord_X_PorteAvionJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
-                    coord_X_PorteAvionJun = scannerJun.nextInt();
-                }
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne Y de votre Porte-Avions :");
-                coord_Y_PorteAvionJun = scannerJun.nextInt();
-                while (coord_Y_PorteAvionJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " : Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
-                    coord_Y_PorteAvionJun = scannerJun.nextInt();
-                }
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Porte-Avions : ");
-                orientationPorteAvionJun = scannerJun.next();
 
-                while (!orientationPorteAvionJun.equalsIgnoreCase("H") && !orientationPorteAvionJun.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Porte-avion : ");
-                    orientationPorteAvionJun = scannerJun.next();
-                }
-                placementPorteAvionJun = ajoutePorteAvion(grilleJun, coord_X_PorteAvionJun, coord_Y_PorteAvionJun, orientationPorteAvionJun);
-
+            System.out.println(pseudoJun + " : Placement porte Avions");
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_PA_Jun = coordonnees[0];
+            int y_PA_Jun = coordonnees[1];
+            String orientation = demandeOrientation(scannerJun);
+            while (!estCoordonneeValide(grilleJun, x_PA_Jun, y_PA_Jun, tailleCR, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+                x_PA_Jun = coordonnees[0];
+                y_PA_Jun = coordonnees[1];
+                orientation = demandeOrientation(scannerJun);
             }
+            placerBateau(grilleJun, porteAvions, x_PA_Jun, y_PA_Jun, taillePA, orientation, tailleGrille);
 
             //-------------------------------------------J1 : Placer le Croiseur-----------------------------------------
-            while (!placementCroiseurJun) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Croiseur :");
-                coord_X_CroiseurJun = scannerJun.nextInt();
-
-                while (coord_X_CroiseurJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée X correcte pour le Croiseur :");
-                    coord_X_CroiseurJun = scannerJun.nextInt();
-                }
-
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne Y de votre Croiseur :");
-                coord_Y_CroiseurJun = scannerJun.nextInt();
-
-                while (coord_Y_CroiseurJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonnée Y correcte pour le Croiseur :");
-                    coord_Y_CroiseurJun = scannerJun.nextInt();
-                }
-
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Croiseur : ");
-                orientationCroiseurJun = scannerJun.next();
-                while (!orientationCroiseurJun.equalsIgnoreCase("H") && !orientationCroiseurJun.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
-                    orientationCroiseurJun = scannerJun.next();
-                }
-
-
-                placementCroiseurJun = ajouteCroiseur(grilleJun, coord_X_CroiseurJun, coord_Y_CroiseurJun, orientationCroiseurJun);
+            System.out.println(pseudoJun + " : Placement du croiseur");
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_CR_Jun = coordonnees[0];
+            int y_CR_Jun = coordonnees[1];
+            orientation = demandeOrientation(scannerJun);
+            while (!estCoordonneeValide(grilleJun, x_CR_Jun, y_CR_Jun, tailleCR, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+                x_CR_Jun = coordonnees[0];
+                y_CR_Jun = coordonnees[1];
+                orientation = demandeOrientation(scannerJun);
             }
-
+            placerBateau(grilleJun, croiseur, x_CR_Jun, y_CR_Jun, tailleCR, orientation, tailleGrille);
             System.out.println('\n');
             //---------------------------------- J1 : PLacement Sous-Marin : 3 cases---------------------------------------------
-            while (!placementSousMarinJun) {
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Sous-Marin :");
-                coord_X_SousMarinJun = scannerJun.nextInt();
-                while (coord_X_SousMarinJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
-                    coord_X_SousMarinJun = scannerJun.nextInt();
-                }
-                System.out.println(pseudoJun + " Veuillez saisir la coordonne Y de votre Sous-Marin :");
-                coord_Y_SousMarinJun = scannerJun.nextInt();
-                while (coord_Y_SousMarinJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
-                    coord_Y_SousMarinJun = scannerJun.nextInt();
-                }
-
-                System.out.println(pseudoJun + " : Veuillez saisir l'orientation de votre Sous-Marin : ");
-                orientationSousMarinJun = scannerJun.next();
-                while (!orientationSousMarinJun.equalsIgnoreCase("H") && !orientationSousMarinJun.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correct pour votre Sous-Marin : ");
-                    orientationSousMarinJun = scannerJun.next();
-                }
-                placementSousMarinJun = ajouteSousMarinOuDestroyer(grilleJun, coord_X_SousMarinJun, coord_Y_SousMarinJun, orientationSousMarinJun, "Sous-Marin");
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_SM_Jun = coordonnees[0];
+            int y_SM_Jun = coordonnees[1];
+            orientation = demandeOrientation(scannerJun);
+            while (!estCoordonneeValide(grilleJun, x_SM_Jun, y_SM_Jun, tailleSM, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+                x_SM_Jun = coordonnees[0];
+                y_SM_Jun = coordonnees[1];
+                orientation = demandeOrientation(scannerJun);
             }
+            placerBateau(grilleJun, sousMarin, x_SM_Jun, y_SM_Jun, tailleSM, orientation, tailleGrille);
 
             System.out.println('\n');
-            //------------------------------------------J1 : Placement Croiseur : 3 cases --> Destroyer--------------------------------------------
-            while (!placementDestroyerJun) {
-
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Destroyer  :");
-                coord_X_DestroyerJun = scannerJun.nextInt();
-                while (coord_X_DestroyerJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X de votre Destroyer : ");
-                    coord_X_DestroyerJun = scannerJun.nextInt();
-                }
-                System.out.println("(" + pseudoJun + " Veuillez saisir la coordonne Y de votre Destroyer :");
-                coord_Y_DestroyerJun = scannerJun.nextInt();
-                while (coord_Y_DestroyerJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne Y correcte pour votre Destroyer :");
-                    coord_Y_DestroyerJun = scannerJun.nextInt();
-                }
-
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir l'orientation de votre Destroyeur : ");
-                orientationDestroyerJun = scannerJun.next();
-                while (orientationDestroyerJun.equalsIgnoreCase("H") && orientationDestroyerJun.equalsIgnoreCase("V")) {
-                    System.out.println(pseudoJun + " Veuillez saisir une orientation correcte pour votre Destroyer : ");
-                    orientationDestroyerJun = scannerJun.next();
-                }
-                placementDestroyerJun = ajouteSousMarinOuDestroyer(grilleJun, coord_X_DestroyerJun, coord_Y_DestroyerJun, orientationDestroyerJun, "Destroyer");
+            //------------------------------------------J1 : Placement Destroyer : 3 cases --> Destroyer--------------------------------------------
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_DE_Jun = coordonnees[0];
+            int y_DE_Jun = coordonnees[1];
+            orientation = demandeOrientation(scannerJun);
+            while (!estCoordonneeValide(grilleJun, x_DE_Jun, y_DE_Jun, tailleDestroyer, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+                x_DE_Jun = coordonnees[0];
+                y_DE_Jun = coordonnees[1];
+                orientation = demandeOrientation(scannerJun);
             }
+            placerBateau(grilleJun, destroyer, x_DE_Jun, y_DE_Jun, tailleDestroyer, orientation, tailleGrille);
 
             System.out.println('\n');
             //-----------------------------------J1 : Placement torpilleur : 2 cases----------------------------------------------
-            while (!placementTorpilleurJun) {
-
-                System.out.println("(" + pseudoJun + ")" + " Veuillez saisir la coordonne X de votre Torpilleur  :");
-                coord_X_TorpilleurJun = scannerJun.nextInt();
-                while (coord_X_TorpilleurJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne X de votre Torpilleur :");
-                    coord_X_TorpilleurJun = scannerJun.nextInt();
-                }
-                System.out.println(pseudoJun + " Veuillez saisir la coordonne Y de votre Torpilleur  :");
-                coord_Y_TorpilleurJun = scannerJun.nextInt();
-                while (coord_Y_TorpilleurJun > 9) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une coordonne Y correcte pour votre Torpilleur :");
-                    coord_Y_TorpilleurJun = scannerJun.nextInt();
-                }
-
-                System.out.println("(" + pseudoJun + " Veuillez saisir l'orientation de votre Torpilleur : ");
-                orientationTorpilleurJun = scannerJun.next();
-                while (orientationTorpilleurJun.equalsIgnoreCase("H") && orientationTorpilleurJun.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJun + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
-                    orientationTorpilleurJun = scannerJun.next();
-                }
-                placementTorpilleurJun = ajouteTorpilleur(grilleJun, coord_X_TorpilleurJun, coord_Y_TorpilleurJun, orientationTorpilleurJun);
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_TOR_Jun = coordonnees[0];
+            int y_TOR_Jun = coordonnees[1];
+            orientation = demandeOrientation(scannerJun);
+            while (!estCoordonneeValide(grilleJun, x_TOR_Jun, y_TOR_Jun, tailleCR, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+                x_TOR_Jun = coordonnees[0];
+                y_TOR_Jun = coordonnees[1];
+                orientation = demandeOrientation(scannerJun);
             }
+            placerBateau(grilleJun, torpilleur, x_TOR_Jun, y_TOR_Jun, tailleTorp, orientation, tailleGrille);
 
             System.out.println('\n');
             //------------------------------J2 : Placer le Porte Avions-----------------------------------------------------------
-            while (!placementPorteAvionJdeux) {
-                //Joueur 1
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Porte-Avions :");
-                coord_X_PorteAvionJdeux = scannerJdeux.nextInt();
-                while (coord_X_PorteAvionJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée X correcte pour le Porte-Avions :");
-                    coord_X_PorteAvionJdeux = scannerJdeux.nextInt();
-                }
-                System.out.println(pseudoJdeux + " Veuillez saisir la coordonne Y de votre Porte-Avions :");
-                coord_Y_PorteAvionJdeux = scannerJdeux.nextInt();
-                while (coord_Y_PorteAvionJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée Y correcte pour le Porte-Avions :");
-                    coord_Y_PorteAvionJdeux = scannerJdeux.nextInt();
-                }
-                System.out.println("(" + pseudoJdeux + ")" + "  Veuillez saisir l'orientation de votre Porte-Avions : ");
-                orientationPorteAvionJdeux = scannerJdeux.next();
-
-                while (!orientationPorteAvionJdeux.equalsIgnoreCase("H") && !orientationPorteAvionJdeux.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Porte-avion : ");
-                    orientationPorteAvionJdeux = scannerJdeux.next();
-                }
-                placementPorteAvionJdeux = ajoutePorteAvion(grilleJdeux, coord_X_PorteAvionJdeux, coord_Y_PorteAvionJdeux, orientationPorteAvionJdeux);
-
+            System.out.println(pseudoJdeux + " : Placement porte Avions");
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_PA_Jdeux = coordonnees[0];
+            int y_PA_Jdeux = coordonnees[1];
+            orientation = demandeOrientation(scannerJdeux);
+            while (!estCoordonneeValide(grilleJdeux, x_PA_Jdeux, y_PA_Jdeux, taillePA, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+                x_PA_Jdeux = coordonnees[0];
+                y_PA_Jdeux = coordonnees[1];
+                orientation = demandeOrientation(scannerJdeux);
             }
+            placerBateau(grilleJdeux, porteAvions, x_PA_Jdeux, y_PA_Jdeux, taillePA, orientation, tailleGrille);
 
             System.out.println('\n');
             //-------------------------------------------J2 : Placer le Croiseur-----------------------------------------
-            while (!placementCroiseurJdeux) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Croiseur :");
-                coord_X_CroiseurJdeux = scannerJdeux.nextInt();
-
-                while (coord_X_CroiseurJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée X correcte pour le Croiseur :");
-                    coord_X_CroiseurJdeux = scannerJdeux.nextInt();
-                }
-
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Croiseur :");
-                coord_Y_CroiseurJdeux = scannerJdeux.nextInt();
-
-                while (coord_Y_CroiseurJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonnée Y correcte pour le Cuirasse :");
-                    coord_Y_CroiseurJdeux = scannerJdeux.nextInt();
-                }
-
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Croiseur : ");
-                orientationCroiseurJdeux = scannerJdeux.next();
-                while (!orientationCroiseurJdeux.equalsIgnoreCase("H") && !orientationCroiseurJdeux.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Cuirasse : ");
-                    orientationCroiseurJdeux = scannerJdeux.next();
-                }
-
-
-                placementCroiseurJdeux = ajouteCroiseur(grilleJdeux, coord_X_CroiseurJdeux, coord_Y_CroiseurJdeux, orientationCroiseurJdeux);
+            System.out.println(pseudoJdeux + " : Placement du croiseur");
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_CR_Jdeux = coordonnees[0];
+            int y_CR_Jdeux = coordonnees[1];
+            orientation = demandeOrientation(scannerJdeux);
+            while (!estCoordonneeValide(grilleJdeux, x_CR_Jdeux, y_CR_Jdeux, tailleCR, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+                x_CR_Jdeux = coordonnees[0];
+                y_CR_Jdeux = coordonnees[1];
+                orientation = demandeOrientation(scannerJdeux);
             }
+            placerBateau(grilleJdeux, croiseur, x_CR_Jdeux, y_CR_Jdeux, tailleCR, orientation, tailleGrille);
 
             System.out.println('\n');
             //---------------------------------- J2 : PLacement Sous-Marin : 3 cases---------------------------------------------
-            while (!placementSousMarinJdeux) {
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Sous-Marin :");
-                coord_X_SousMarinJdeux = scannerJdeux.nextInt();
-                while (coord_X_SousMarinJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
-                    coord_X_SousMarinJdeux = scannerJdeux.nextInt();
-                }
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Sous-Marin :");
-                coord_Y_SousMarinJdeux = scannerJdeux.nextInt();
-                while (coord_Y_SousMarinJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X correct pour votre Sous-Marin :");
-                    coord_Y_SousMarinJdeux = scannerJdeux.nextInt();
-                }
-
-                System.out.println("(" + pseudoJdeux + ")" + "  Veuillez saisir l'orientation de votre Sous-Marin : ");
-                orientationSousMarinJdeux = scannerJdeux.next();
-                while (!orientationSousMarinJdeux.equalsIgnoreCase("H") && !orientationSousMarinJdeux.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correct pour votre Sous-Marin : ");
-                    orientationSousMarinJdeux = scannerJdeux.next();
-                }
-                placementSousMarinJdeux = ajouteSousMarinOuDestroyer(grilleJdeux, coord_X_SousMarinJdeux, coord_Y_SousMarinJdeux, orientationSousMarinJdeux, "Sous-Marin");
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_SM_Jdeux = coordonnees[0];
+            int y_SM_Jdeux = coordonnees[1];
+            orientation = demandeOrientation(scannerJdeux);
+            while (!estCoordonneeValide(grilleJdeux, x_SM_Jdeux, y_SM_Jdeux, tailleSM, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJdeux, tailleGrille);
+                x_SM_Jdeux = coordonnees[0];
+                y_SM_Jdeux = coordonnees[1];
+                orientation = demandeOrientation(scannerJdeux);
             }
+            placerBateau(grilleJdeux, sousMarin, x_SM_Jdeux, y_SM_Jdeux, tailleSM, orientation, tailleGrille);
+
+            System.out.println('\n');
 
             //------------------------------------------J2 : Placement Destroyer : 3 cases--------------------------------------------
-            while (!placementDestroyerJdeux) {
-
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Destroyer :");
-                coord_X_DestroyerJdeux = scannerJdeux.nextInt();
-                while (coord_X_DestroyerJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + " Veuillez saisir une coordonne X de votre Destroyer :");
-                    coord_X_DestroyerJdeux = scannerJdeux.nextInt();
-                }
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne Y de votre Destroyer  :");
-                coord_Y_DestroyerJdeux = scannerJdeux.nextInt();
-                while (coord_Y_DestroyerJdeux > 9) {
-                    System.out.println(pseudoJdeux + " Veuillez saisir une coordonne Y correcte pour votre Destroyer :");
-                    coord_Y_DestroyerJdeux = scannerJdeux.nextInt();
-                }
-
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Destroyer : ");
-                orientationDestroyerJdeux = scannerJdeux.next();
-                while (orientationCroiseurJdeux.equalsIgnoreCase("H") && orientationCroiseurJdeux.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Destroyer : ");
-                    orientationDestroyerJdeux = scannerJdeux.next();
-                }
-                placementDestroyerJdeux = ajouteSousMarinOuDestroyer(grilleJdeux, coord_X_DestroyerJdeux, coord_Y_DestroyerJdeux, orientationDestroyerJdeux, "Destroyer");
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_DES_Jdeux = coordonnees[0];
+            int y_DES_Jdeux = coordonnees[1];
+            orientation = demandeOrientation(scannerJdeux);
+            while (!estCoordonneeValide(grilleJdeux, x_DES_Jdeux, y_DES_Jdeux, tailleDestroyer, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJdeux, tailleGrille);
+                x_DES_Jdeux = coordonnees[0];
+                y_DES_Jdeux = coordonnees[1];
+                orientation = demandeOrientation(scannerJdeux);
             }
+            placerBateau(grilleJdeux, destroyer, x_DES_Jdeux, y_DES_Jdeux, tailleDestroyer, orientation, tailleGrille);
+
+
+            System.out.println('\n');
 
             //-----------------------------------J2 : Placement torpilleur : 2 cases----------------------------------------------
-            while (!placementTorpilleurJdeux) {
-
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir la coordonne X de votre Torpilleur  :");
-                coord_X_TorpilleurJdeux = scannerJdeux.nextInt();
-                while (coord_X_TorpilleurJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une coordonne X de votre Torpilleur :");
-                    coord_X_TorpilleurJdeux = scannerJdeux.nextInt();
-                }
-                System.out.println("(" + pseudoJdeux + ")" + " : Veuillez saisir la coordonne Y de votre Torpilleur  :");
-                coord_Y_TorpilleurJdeux = scannerJdeux.nextInt();
-                while (coord_Y_TorpilleurJdeux > 9) {
-                    System.out.println("(" + pseudoJdeux + ")" + " : Veuillez saisir une coordonne Y correcte pour votre Torpilleur :");
-                    coord_Y_TorpilleurJdeux = scannerJdeux.nextInt();
-                }
-
-                System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir l'orientation de votre Torpilleur : ");
-                orientationTorpilleurJdeux = scannerJdeux.next();
-                while (orientationTorpilleurJdeux.equalsIgnoreCase("H") && orientationTorpilleurJdeux.equalsIgnoreCase("V")) {
-                    System.out.println("(" + pseudoJdeux + ")" + " Veuillez saisir une orientation correcte pour votre Croiseur : ");
-                    orientationTorpilleurJdeux = scannerJdeux.next();
-                }
-                placementTorpilleurJdeux = ajouteTorpilleur(grilleJdeux, coord_X_TorpilleurJdeux, coord_Y_TorpilleurJdeux, orientationTorpilleurJdeux);
+            coordonnees = demandeCoordonnees(scannerJun, tailleGrille);
+            int x_TORP_Jdeux = coordonnees[0];
+            int y_TORP_Jdeux = coordonnees[1];
+            orientation = demandeOrientation(scannerJdeux);
+            while (!estCoordonneeValide(grilleJdeux, x_TORP_Jdeux, y_TORP_Jdeux, tailleTorp, orientation)) {
+                coordonnees = demandeCoordonnees(scannerJdeux, tailleGrille);
+                x_TORP_Jdeux = coordonnees[0];
+                y_TORP_Jdeux = coordonnees[1];
+                orientation = demandeOrientation(scannerJdeux);
             }
+            placerBateau(grilleJdeux, torpilleur, x_TORP_Jdeux, y_TORP_Jdeux, tailleTorp, orientation, tailleGrille);
 
+            System.out.println('\n');
 
-            //----------------------------------------------Choix tirs-------------------------------------------------------
-
-
+            //----------------------------------------------Choix tirs-----------------------------------------------------
             while (true) {
-
-
                 //------------------------------------Tour J1---------------------------------------------------------------
-                System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
-                tir_X_Jun = scannerJun.nextInt();
+                System.out.println("(Tir " + pseudoJun + ")");
+                int[] coordonnes_Tir = demandeCoordonnees(scannerJun, tailleGrille);
+                tir_X_Jun = coordonnes_Tir[0];
+                tir_Y_Jun = coordonnes_Tir[1];
 
-
-                System.out.println("(" + pseudoJun + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
-                tir_Y_Jun = scannerJun.nextInt();
-
-
-                listeTirsJun.add("[" + tir_X_Jun + "]\t");
-                listeTirsJun.add("[" + tir_Y_Jun + "]\t\n");
+                while (!estTirValide(grilleJdeux, tir_X_Jun, tir_Y_Jun)) {
+                    coordonnees = demandeCoordonnees(scannerJdeux, tailleGrille);
+                    tir_X_Jun = coordonnees[0];
+                    tir_Y_Jun = coordonnees[1];
+                }
 
                 listeTirsJun.add("[" + tir_X_Jun + "]\t");
                 listeTirsJun.add("[" + tir_Y_Jun + "]\t\n");
@@ -355,23 +292,26 @@ public class Main {
                 //contientBateau()  Porte-Avion
                 if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Porte-Avions")) {
                     System.out.println("Touché\n");
+                    grilleJdeux[tir_X_Jun][tir_Y_Jun].equals("  ~  ");
                     nbTouchePorteAvionJun++;
                     listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
                     listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
                     if (nbTouchePorteAvionJun == 5) {
-                        coulePorteAvionJun = true;
+                        bateauxCoulesJdeux[0] = true ;
                         System.out.println("Porte-Avion coulé !\n");
                     }
                 }
+
 
                 //Croiseur
                 else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Croiseur")) {
                     System.out.println("Touché\n");
                     nbToucheCroiseurJun++;
+                    grilleJdeux[tir_X_Jun][tir_Y_Jun].equals("  ~  ");
                     listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
                     listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
                     if (nbToucheCroiseurJun == 4) {
-                        couleCroiseurJun = true;
+                        bateauxCoulesJdeux[1]  = true ;
                         System.out.println("Croiseur coulé !\n");
                     }
                 } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Sous-marin")) {
@@ -380,7 +320,7 @@ public class Main {
                     listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
                     listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
                     if (nbToucheSousMarinJun == 3) {
-                        couleSousMarinJun = true;
+                        bateauxCoulesJdeux[2]  = true ;
                         System.out.println("Sous-Marin coulé !\n");
                     }
                 } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Destroyer")) {
@@ -389,7 +329,7 @@ public class Main {
                     listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
                     listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
                     if (nbToucheDestroyerJun == 3) {
-                        couleDestroyerJun = true;
+                        bateauxCoulesJdeux[3] = true ;
                         System.out.println("Destroyer coulé !\n");
                     }
                 } else if (contientBateau(grilleJdeux, tir_X_Jun, tir_Y_Jun, "Torpilleur")) {
@@ -398,37 +338,39 @@ public class Main {
                     listeTouchesCoulesJun.add("[" + tir_X_Jun + "]\t");
                     listeTouchesCoulesJun.add("[" + tir_Y_Jun + "]\t\n");
                     if (nbToucheTorpilleurJun == 2) {
-                        couleTorpilleurJun = true;
+                        bateauxCoulesJdeux[4] = true ;
                         System.out.println("Torpilleur coulé !\n");
                     }
                 } else {
                     System.out.println("EAU");
                 }
 
-
-                for (int i = 0; i < grilleJun.length; i++) {
-                    System.out.println(Arrays.deepToString(grilleJun[i]) + "              " + Arrays.deepToString(grilleJdeux[i]) + '\n');
-                }
-
-                if (coulePorteAvionJun && couleCroiseurJun && couleDestroyerJun && couleSousMarinJun && couleTorpilleurJun) {
+                if (tousBateauxCoules(bateauxCoulesJdeux)) {
                     victoireJun = true;
                     System.out.println(pseudoJun + " a gagné \n");
                     nb_Victoire_Jun++;
                     nb_Defaite_Jdeux++;
                     listeVainqueurs.add(pseudoJun);
-                    listeVainqueurs.add(pseudoJdeux);
+                    listePerdants.add(pseudoJdeux);
                     break;
                 }
-
-
+                System.out.println("Bateaux coulés joueur 1 : " + Arrays.toString(bateauxCoulesJun));
+                System.out.println("Bateaux coulés joueur 2 : " + Arrays.toString(bateauxCoulesJdeux));
+                afficherGrille(grilleJun);
+                System.out.println("--------------------------------------------------------------");
+                afficherGrille(grilleJdeux);
                 //-------------------------------------Tour J2-------------------------------------------------
+                System.out.println("(Tir " + pseudoJdeux + ")");
+                coordonnees = demandeCoordonnees(scannerJdeux, tailleGrille);
+                tir_X_Jdeux = coordonnees[0];
+                tir_Y_Jdeux = coordonnees[1];
 
-                System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee X  : ");
-                tir_X_Jdeux = scannerJdeux.nextInt();
 
-
-                System.out.println("(" + pseudoJdeux + " - Tir )" + "Veuillez choisir une coordonnee Y  : ");
-                tir_Y_Jdeux = scannerJdeux.nextInt();
+                while (!estTirValide(grilleJun, tir_X_Jdeux, tir_Y_Jdeux)) {
+                    coordonnees = demandeCoordonnees(scannerJdeux, tailleGrille);
+                    tir_X_Jdeux = coordonnees[0];
+                    tir_Y_Jdeux = coordonnees[1];
+                }
 
                 listeTirsJdeux.add("[" + tir_X_Jdeux + "]\t");
                 listeTirsJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
@@ -440,8 +382,8 @@ public class Main {
                     listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
                     listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
                     if (nbTouchePorteAvionJdeux == 5) {
-                        coulePorteAvionJdeux = true;
                         System.out.println("Porte-Avion coulé !\n");
+                        bateauxCoulesJun[0] = true ;
                     }
                 }
 
@@ -453,7 +395,7 @@ public class Main {
                     listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
                     listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
                     if (nbToucheCroiseurJdeux == 4) {
-                        couleCroiseurJdeux = true;
+                        bateauxCoulesJun[1] = true ;
                         System.out.println("Croiseur coulé !\n");
                     }
                 } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Sous-marin")) {
@@ -464,7 +406,7 @@ public class Main {
                     if (nbToucheSousMarinJdeux == 3) {
                         listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
                         listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                        couleSousMarinJdeux = true;
+                        bateauxCoulesJun[2] = true ;
                         System.out.println("Sous-Marin coulé !\n");
                     }
                 } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Destroyer")) {
@@ -473,7 +415,7 @@ public class Main {
                     if (nbToucheDestroyerJdeux == 3) {
                         listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
                         listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                        couleDestroyerJdeux = true;
+                        bateauxCoulesJun[3] = true ;
                         System.out.println("Destroyer coulé !\n");
                     }
                 } else if (contientBateau(grilleJun, tir_X_Jdeux, tir_Y_Jdeux, "Torpilleur")) {
@@ -484,20 +426,15 @@ public class Main {
                     if (nbToucheTorpilleurJdeux == 2) {
                         listeTouchesCoulesJdeux.add("[" + tir_X_Jdeux + "]\t");
                         listeTouchesCoulesJdeux.add("[" + tir_Y_Jdeux + "]\t\n");
-                        couleTorpilleurJdeux = true;
+                        bateauxCoulesJun[4] = true ;
                         System.out.println("Torpilleur coulé !\n");
                     }
                 } else {
                     System.out.println("Eau");
                 }
 
-
-                for (int i = 0; i < grilleJun.length; i++) {
-                    System.out.println(Arrays.deepToString(grilleJun[i]) + "              " + Arrays.deepToString(grilleJdeux[i]) + '\n');
-                }
-
-                if (coulePorteAvionJdeux && couleCroiseurJdeux && couleDestroyerJdeux && couleSousMarinJdeux && couleTorpilleurJdeux) {
-                    victoireJun = true;
+                if (tousBateauxCoules(bateauxCoulesJun)) {
+                    victoireJdeux = true;
                     System.out.println(pseudoJdeux + " a gagné \n");
                     nb_Victoire_Jdeux++;
                     nb_Defaite_Jun++;
@@ -505,7 +442,14 @@ public class Main {
                     listePerdants.add(pseudoJun);
                     break;
                 }
+                System.out.println("Bateaux coulés joueur 1 : " + Arrays.toString(bateauxCoulesJun));
+                System.out.println("Bateaux coulés joueur 2 : " + Arrays.toString(bateauxCoulesJdeux));
+                afficherGrille(grilleJun);
+                System.out.println("--------------------------------------");
+                afficherGrille(grilleJdeux);
             }
+
+
 
             long finJeu = Instant.now().getEpochSecond();
             long totalSecondes = finJeu - debutJeu;
@@ -522,6 +466,7 @@ public class Main {
                 if (countLigneListe % 2 == 0) {
                     System.out.print('\n');
                     nb_Tir_Jun++;
+
                 }
             }
             System.out.print('\n');
@@ -562,15 +507,14 @@ public class Main {
                 for (Object perdant : listePerdants) {
                     System.out.println("Vainqueur : " + vainqueur);
                     System.out.println("Perdant : " + perdant);
-
-                    System.out.println("Durée de la partie " + (nb_Partie) + " : "
-                            + heures+" heures " + minutes + " minutes " + secondes + " secondes");
                 }
-            }
+                    System.out.println("Durée de la partie " + (nb_Partie) + " : "
+                            + heures + " heures " + minutes + " minutes " + secondes + " secondes");
+                }
             System.out.println(pseudoJun.toUpperCase());
             System.out.println("NOmbre de tirs : " + nb_Tir_Jun);
             System.out.println("Nombre de touche/coule : " + nb_Touche_Coule_Jun);
-            float ratioJun = (float) nb_Touche_Coule_Jun / nb_Tir_Jun;
+            float ratioJun = (float) nb_Touche_Coule_Jun / (nb_Tir_Jun);
             System.out.println("Ratio précision tir : " + (ratioJun * 100) + "%");
 
             System.out.println('\n');
@@ -581,586 +525,278 @@ public class Main {
             float ratioJdeux = (float) nb_ToucheCoule_Jdeux / nb_tir_Jdeux;
             System.out.println("Ratio précision tir : " + (ratioJdeux * 100) + "%");
 
-            System.out.println("J1 : Voulez-vous rejouer (O/N) ? ");
+            System.out.println("Voulez-vous rejouer ? (oui/non) : ");
             reponseJun = scannerJun.next();
-
-            if (reponseJun.equals("O") || reponseJun.equals("o")) {
-                continue;
-            } else {
-                System.out.println("FIN");
-                break;
+            if (reponseJun.equals("non")) {
+                rejouer = false; // Fin du jeu
             }
         }
+        while(reponseJun.equals("oui"));
     }
 
-    public static boolean ajoutePorteAvion(String[][] grille, int emplacement_x, int emplacement_y, String orientation) {
-
-        if (emplacement_y <= 5 && orientation.equals("H")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "PO";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y + 1].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 1] = "RT";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 1) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y + 2].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 2] = "E ";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 2) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y + 3].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 3] = "AV";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 3) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y + 4].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 4] = "ION";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 4) + "]");
-                return false;
-            }
-            // Si l'index de la colonne est superieur à 5 on va inverser l'incrementation pour éviter les ajouts hors de champs
-        } else if (emplacement_y > 5 && orientation.equals("H")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "PO";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y - 1].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 1] = "RT";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 1) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y - 2].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 2] = "E ";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 2) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y - 3].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 3] = "AV";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 3) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y - 4].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 4] = "ION";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 4) + "]");
-                return false;
-            }
-
-            //Verification placement vertical
-        } else if (emplacement_x <= 5 && orientation.equals("V")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "PO";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x + 1][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 1][emplacement_y] = "RT";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 1) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x + 2][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 2][emplacement_y] = "E ";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 2) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x + 3][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 3][emplacement_y] = "AV";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 3) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x + 4][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 4][emplacement_y] = "ION";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 4) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
 
 
-        } else if (emplacement_x > 5 && orientation.equals("V")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "PO";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y) + "]");
-                return false;
+
+
+    public static boolean ajouteCoordonnees(String[][] grille, int x, int y, String orientation, int taille, String[] sections) {
+        // Vérification des limites et disponibilité des cases
+        if (orientation.equals("H")) {
+            for (int i = 0; i < taille; i++) {
+                if (y + i >= grille[0].length || !grille[x][y + i].equals("  ~  ")) {
+                    System.out.println("Impossible de placer le bateau horizontalement. Case occupée ou hors limites à [" + x + "][" + (y + i) + "].");
+                    return false;
+                }
             }
-            if (grille[emplacement_x - 1][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 1][emplacement_y] = "RT";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
-                return false;
+        } else if (orientation.equals("V")) {
+            for (int i = 0; i < taille; i++) {
+                if (x + i >= grille.length || !grille[x + i][y].equals("  ~  ")) {
+                    System.out.println("Impossible de placer le bateau verticalement. Case occupée ou hors limites à [" + (x + i) + "][" + y + "].");
+                    return false;
+                }
             }
-            if (grille[emplacement_x - 2][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 2][emplacement_y] = "E ";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
-                return false;
+        } else {
+            System.out.println("Orientation invalide. Utilisez 'H' pour horizontal ou 'V' pour vertical.");
+            return false;
+        }
+
+        // Placement du bateau
+        if (orientation.equals("H")) {
+            for (int i = 0; i < taille; i++) {
+                grille[x][y + i] = sections[i];
             }
-            if (grille[emplacement_x - 3][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 3][emplacement_y] = "AV";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 3) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 4][emplacement_y] = "ION";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 4) + "]" + "[" + (emplacement_y) + "]");
-                return false;
+        } else if (orientation.equals("V")) {
+            for (int i = 0; i < taille; i++) {
+                grille[x + i][y] = sections[i];
             }
         }
+
+        System.out.println("Bateau ajouté avec succès !");
         return true;
     }
 
 
-    public static boolean ajouteCroiseur(String[][] grille, int emplacement_x, int emplacement_y, String orientation) {
-
-
-        if (emplacement_y <= 5 && orientation.equals("H")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "CR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
-                return false;
+    public static void placerBateau(String[][] grille, String[] bateau, int x, int y, int tailleBateau, String orientation, int tailleGrille) {
+        // Vérification si l'espace est libre pour le bateau (selon l'orientation)
+        if (orientation.equals("H")) { // Placer horizontalement
+            // Vérifier si le bateau peut être placé horizontalement sans dépasser la grille
+            if (y + tailleBateau > tailleGrille) {
+                System.out.println("Le bateau ne tient pas horizontalement !");
+                return; // Le bateau ne peut pas être placé
             }
 
-            if (grille[emplacement_x][emplacement_y + 1].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 1] = "OI";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 1) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y + 2].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 2] = "SE";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 2) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y + 3].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 3] = "UR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 3) + "]");
-                return false;
-            }
-        } else if (emplacement_y > 5 && orientation.equals("H")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "CR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y - 1].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 1] = "OI";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 1) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y - 2].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 2] = "SE";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 2) + "]");
-                return false;
+            // Vérifier si les cases sont libres
+            for (int i = 0; i < tailleBateau; i++) {
+                if (!grille[x][y + i].equals("  ~  ")) { // Vérifie si la case est vide
+                    System.out.println("Espace occupé !");
+
+                }
             }
 
-            if (grille[emplacement_x][emplacement_y - 3].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 3] = "UR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 3) + "]");
-                return false;
+            // Placer le bateau horizontalement dans la grille
+            for (int i = 0; i < tailleBateau; i++) {
+                grille[x][y + i] = bateau[i]; // Placer le bateau dans la case
             }
 
-        } else if (emplacement_x <= 5 && orientation.equals("V")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "CR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                return false;
+        } else if (orientation.equals("V")) { // Placer verticalement
+            // Vérifier si le bateau peut être placé verticalement sans dépasser la grille
+            if (x + tailleBateau > tailleGrille) {
+                System.out.println("Le bateau ne tient pas verticalement !");
+                return; // Le bateau ne peut pas être placé
             }
-            if (grille[emplacement_x + 1][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 1][emplacement_y] = "OI";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 1) + "]" + "[" + (emplacement_y) + "]");
-                return false;
+
+            // Vérifier si les cases sont libres
+            for (int i = 0; i < tailleBateau; i++) {
+                if (!grille[x + i][y].equals("  ~  ")) { // Vérifie si la case est vide
+                    System.out.println("Espace occupé !");
+                    return; // Si une case est déjà occupée, on ne peut pas placer le bateau
+                }
             }
-            if (grille[emplacement_x + 2][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 2][emplacement_y] = "SE";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 2) + "]" + "[" + (emplacement_y) + "]");
-                return false;
+
+            // Placer le bateau verticalement dans la grille
+            for (int i = 0; i < tailleBateau; i++) {
+                grille[x + i][y] = bateau[i]; // Placer le bateau dans la case
             }
-            if (grille[emplacement_x + 3][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 3][emplacement_y] = "UR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 3) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-        } else if (emplacement_x > 5 && orientation.equals("V")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "CR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x - 1][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 1][emplacement_y] = "OI";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x - 2][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 2][emplacement_y] = "SE";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 2) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x - 3][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 3][emplacement_y] = "UR";
-            } else {
-                System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 3) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
+
+        } else {
+            System.out.println("Orientation invalide !");
+            return; // Orientation invalide
         }
-        return true;
-    }
-//---------------------------------------------ajouteSousMarinOuDestroyer--------------------------------------------------
 
-    public static boolean ajouteSousMarinOuDestroyer(String[][] grille, int emplacement_x, int emplacement_y, String orientation, String navire) {
-
-        if (navire.equals("Sous-Marin")) {
-
-            if (emplacement_y <= 5 && orientation.equals("H")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "SOUS";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
-                    return false;
-                }
-
-                if (grille[emplacement_x][emplacement_y + 1].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y + 1] = "MA";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 1) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x][emplacement_y + 2].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y + 2] = "RIN";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 2) + "]");
-                    return false;
-                }
-
-            } else if (emplacement_y > 5 && orientation.equals("H")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "SOUS";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x][emplacement_y - 1].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y - 1] = "MA";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 1) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x][emplacement_y - 2].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y - 2] = "RIN";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 2) + "]");
-                    return false;
-                }
-
-
-            } else if (emplacement_x <= 5 && orientation.equals("V")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "SOUS";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x + 1][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x + 1][emplacement_y] = "MA";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 1) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x + 2][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x + 2][emplacement_y] = "RIN";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x + 2) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-
-            } else if (emplacement_x > 5 && orientation.equals("V")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "SOUS";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x - 1][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x - 1][emplacement_y] = "MA";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x - 2][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x - 2][emplacement_y] = "RIN";
-                } else {
-                    System.out.println("Un navire est déja à l'emplacement [" + (emplacement_x - 2) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-            }
-        } else if (navire.equals("Destroyer")) {
-            if (emplacement_y <= 5 && orientation.equals("H")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "DE";
-                } else {
-                    System.out.println("Erreur Destroyer(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
-                    return false;
-                }
-                if (grille[emplacement_x][emplacement_y + 1].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y + 1] = "STR";
-                } else {
-                    System.out.println("Erreur Destroyer(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 1) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x][emplacement_y + 2].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y + 2] = "OYER";
-                } else {
-                    System.out.println("Erreur Destroyer(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 2) + "]");
-                    return false;
-                }
-
-            } else if (emplacement_y > 5 && orientation.equals("H")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "DE";
-                } else {
-                    System.out.println("Erreur Destroyer(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x][emplacement_y - 1].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y - 1] = "STR";
-                } else {
-                    System.out.println("Erreur Destroyer(H) : Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y - 1) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x][emplacement_y - 2].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y - 2] = "OYER";
-                } else {
-                    System.out.println("Erreur Destroyer(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 2) + "]");
-                    return false;
-                }
-
-
-            } else if (emplacement_x <= 5 && orientation.equals("V")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "DE";
-                } else {
-                    System.out.println("Erreur Croiseur(V) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x + 1][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x + 1][emplacement_y] = "STR";
-                } else {
-                    System.out.println("Erreur Destroyer(V) : Un navire est déja à l'emplacement [" + (emplacement_x + 1) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x + 2][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x + 2][emplacement_y] = "OYER";
-                } else {
-                    System.out.println("Erreur Destroyer(V) : Un navire est déja à l'emplacement [" + (emplacement_x + 2) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-
-            } else if (emplacement_x > 5 && orientation.equals("V")) {
-                if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x][emplacement_y] = "DE";
-                } else {
-                    System.out.println("Erreur Destroyer(V) : Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x - 1][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x - 1][emplacement_y] = "STR";
-                } else {
-                    System.out.println("Erreur Destroyer(V) : Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-                if (grille[emplacement_x - 2][emplacement_y].equals("  ~  ")) {
-                    grille[emplacement_x - 2][emplacement_y] = "OYER";
-                } else {
-                    System.out.println("Erreur Destroyer(V) : Un navire est déja à l'emplacement [" + (emplacement_x - 2) + "]" + "[" + (emplacement_y) + "]");
-                    return false;
-                }
-            }
-        }
-        return true;
-
-    }
-    //----------------------------------------ajouteTorpilleur-----------------------------------------------
-
-    public static boolean ajouteTorpilleur(String[][] grille, int emplacement_x, int emplacement_y, String orientation) {
-
-        if (emplacement_y <= 5 && orientation.equals("H")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "TORP";
-            } else {
-                System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + emplacement_y + "]");
-                return false;
-            }
-
-            if (grille[emplacement_x][emplacement_y + 1].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y + 1] = "ILLEUR";
-            } else {
-                System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y + 1) + "]");
-                return false;
-            }
-        } else if (emplacement_y > 5 && orientation.equals("H")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "TORP";
-            } else {
-                System.out.println("Erreur Torpilleur(H)Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x][emplacement_y - 1].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y - 1] = "ILLEUR";
-            } else {
-                System.out.println("Erreur Torpilleur(H) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y - 1) + "]");
-                return false;
-            }
-
-
-        } else if (emplacement_x <= 5 && orientation.equals("V")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "TORP";
-            } else {
-                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + emplacement_x + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x + 1][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x + 1][emplacement_y] = "ILLEUR";
-            } else {
-                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + (emplacement_x + 1) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-
-        } else if (emplacement_x > 5 && orientation.equals("V")) {
-            if (grille[emplacement_x][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x][emplacement_y] = "TORP";
-            } else {
-                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + (emplacement_x) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-            if (grille[emplacement_x - 1][emplacement_y].equals("  ~  ")) {
-                grille[emplacement_x - 1][emplacement_y] = "ILLEUR";
-            } else {
-                System.out.println("Erreur Torpilleur(V) : Un navire est déja à l'emplacement [" + (emplacement_x - 1) + "]" + "[" + (emplacement_y) + "]");
-                return false;
-            }
-
-        }
-        return true;
-
+        System.out.println("Bateau placé avec succès !");
     }
 
-    public static boolean contientBateau(String grille [][] ,int x ,int y , String bateau) {
-        if(bateau.equals("Porte-Avions")){
-            if(grille[x][y].equals("PO")){
+
+    public static int[] demandeCoordonnees(Scanner scanner, int tailleGrille) {
+        int x, y;
+
+            System.out.print("Entrez la coordonnée X (ligne, entre 0 et " + (tailleGrille - 1) + "): ");
+            x = scanner.nextInt();
+
+            System.out.print("Entrez la coordonnée Y (colonne, entre 0 et " + (tailleGrille - 1) + "): ");
+            y = scanner.nextInt();
+
+            // Vérification des limites
+            if (x < 0 || x >= tailleGrille || y < 0 || y >= tailleGrille) {
+                System.out.println("Les coordonnées doivent être entre 0 et " + (tailleGrille - 1) + ". Réessayez.");
+
+            System.out.println("Entrée invalide. Veuillez entrer des nombres entiers.");
+            scanner.nextLine();
+        }
+        return new int[]{x, y};
+    }
+
+    public static boolean estCoordonneeValide(String[][] grille, int x, int y, int tailleBateau, String orientation) {
+        // Vérification des coordonnées
+        if (x < 0 || x >= grille.length || y < 0 || y >= grille[0].length) {
+            System.out.println("Coordonnée en dehors de la grille !");
+            return false;
+        }
+
+        // Vérification de l'orientation et de l'espace disponible pour le bateau
+        if (orientation.equals("H")) { // Placement horizontal
+            if (y + tailleBateau > grille[0].length) {
+                System.out.println("Le bateau dépasse de la grille !");
+                return false;
+            }
+            for (int i = 0; i < tailleBateau; i++) {
+                if (!grille[x][y + i].equals("  ~  ")) { // Si la case est occupée
+                    System.out.println("L'emplacement est déjà occupé à la position (" + x + ", " + (y + i) + ") !");
+                    return false;
+                }
+            }
+        } else if (orientation.equals("V")) { // Placement vertical
+            if (x + tailleBateau > grille.length) {
+                System.out.println("Le bateau dépasse de la grille !");
+                return false;
+            }
+            for (int i = 0; i < tailleBateau; i++) {
+                if (!grille[x + i][y].equals("  ~  ")) { // Si la case est occupée
+                    System.out.println("L'emplacement est déjà occupé à la position (" + (x + i) + ", " + y + ") !");
+                    return false;
+                }
+            }
+        } else {
+            System.out.println("Orientation invalide !");
+            return false;
+        }
+
+        return true; // Les coordonnées sont valides
+    }
+
+    public static boolean estTirValide(String[][] grille, int x, int y) {
+        // Vérification des coordonnées
+        if (x < 0 || x >= grille.length || y < 0 || y >= grille[0].length) {
+            System.out.println("Coordonnée en dehors de la grille !");
+            return false;
+
+        }
+        return true ;
+    }
+
+    public static String demandeOrientation(Scanner scanner) {
+        System.out.println("Veuillez choisir l'orientation : ");
+        return scanner.next();
+    }
+
+    public static void afficherGrille(String[][] grille) {
+        for (int i = 0; i < grille.length; i++) {
+            for (int j = 0; j < grille[i].length; j++) {
+                System.out.print(grille[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+
+    public static boolean contientBateau(String grille[][], int x, int y, String bateau) {
+        if (bateau.equals("Porte-Avions")) {
+            if (grille[x][y].equals("PO")) {
                 grille[x][y] = "  ~  ";
                 return true;
             }
-            if(grille[x][y].equals("RT")){
+            if (grille[x][y].equals("RT")) {
                 grille[x][y] = "  ~  ";
                 return true;
             }
-            if(grille[x][y].equals("E ")){
+            if (grille[x][y].equals("E")) {
                 grille[x][y] = "  ~  ";
                 return true;
             }
-            if(grille[x][y].equals("AV")){
+            if (grille[x][y].equals("AV")) {
                 grille[x][y] = "  ~  ";
                 return true;
             }
-            if(grille[x][y].equals("ION")){
+            if (grille[x][y].equals("ION")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        } else if (bateau.equals("Croiseur")) {
+            if (grille[x][y].equals("CR")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("OI")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("SE")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("UR")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        } else if (bateau.equals("Sous-marin")) {
+            if (grille[x][y].equals("SOUS")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("MA")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("RIN")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        } else if (bateau.equals("Destroyer")) {
+            if (grille[x][y].equals("DE")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("STR")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("OYER")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+        } else if (bateau.equals("Torpilleur")) {
+            if (grille[x][y].equals("TOR")) {
+                grille[x][y] = "  ~  ";
+                return true;
+            }
+            if (grille[x][y].equals("PILLEUR")) {
                 grille[x][y] = "  ~  ";
                 return true;
             }
         }
-        else if(bateau.equals("Croiseur")){
-            if(grille[x][y].equals("CR")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("OI")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("SE")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("UR")){
-                grille[x][y] = "  ~  ";
-                return true;
+        return false;
+    }
+
+    public static boolean tousBateauxCoules(boolean[] bateauxCoules) {
+        for (boolean coule : bateauxCoules) {
+            if (!coule) { // Si un bateau n'est pas coulé, retournez false
+                return false;
             }
         }
-        else if(bateau.equals("Sous-marin")){
-            if(grille[x][y].equals("SOUS")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("MA")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("RIN")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-        }
-        else if(bateau.equals("Destroyer")){
-            if(grille[x][y].equals("DE")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("STR")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("OYER")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-        }
-        else if(bateau.equals("Torpilleur")){
-            if(grille[x][y].equals("TORP")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-            if(grille[x][y].equals("ILLEUR")){
-                grille[x][y] = "  ~  ";
-                return true;
-            }
-        }
-        return false ;
+        return true; // Tous les bateaux sont coulés
     }
 
 }
+
 
 
 
